@@ -126,16 +126,26 @@ ol {
   }
 
   body {
-    padding: 1rem;
+    padding: 0.75rem;
+    align-items: stretch;
   }
 
   h1 {
-    font-size: 2rem;
+    font-size: 1.75rem;
+  }
+
+  h2 {
+    font-size: 1.3rem;
   }
 
   nav {
     flex-direction: column;
     gap: 0.5rem;
+  }
+
+  nav a {
+    width: 100%;
+    text-align: center;
   }
 
   ul {
@@ -146,8 +156,19 @@ ol {
     padding: 1rem;
   }
 
-  nav a {
-    width: 100%;
-    text-align: center;
+  p, li, code, pre {
+    font-size: 1rem;
+    word-break: break-word;
   }
-} 
+
+  pre {
+    overflow-x: auto;
+    font-size: 0.9rem;
+  }
+
+  img, table {
+    max-width: 100%;
+    overflow-x: auto;
+    display: block;
+  }
+}
