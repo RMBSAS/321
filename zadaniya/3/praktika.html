@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Задание 3 — Практика</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+  <h1>Задание 3 — Практика</h1>
+  <nav>
+    <a href="../../index.html">На главную</a> |
+    <a href="teoria.html">Теория</a>
+  </nav>
+  <section>
+    <h2>Практическое задание</h2>
+    <p>Рассматривается база данных «Кондитерские изделия» о поставках в магазины. Из таблицы «Движение товаров» видно, сколько упаковок поступило и сколько продано. Используя данные этой базы, определите общую массу (в килограммах) всех видов зефира, полученных магазинами на улице Металлургов за период с 4 по 13 июня включительно.</p>
+    <h2>Решение на SQL</h2>
+    <pre><code>-- Выбираем поставки зефира для нужного адреса и даты
+SELECT
+  SUM(packs * weight_per_pack) AS total_kg
+FROM movements m
+JOIN products p ON m.product_id = p.id
+JOIN stores s ON m.store_id = s.id
+WHERE p.category = 'зефир'
+  AND s.address LIKE '%Металлургов%'
+  AND m.date_received BETWEEN '2025-06-04' AND '2025-06-13';</code></pre>
+    <p>Здесь <code>weight_per_pack</code> — вес одной упаковки в килограммах, <code>packs</code> — число поступивших упаковок. Запрос суммирует общий вес за указанный период и фильтрует по адресу магазина.</p>
+  </section>
+</body>
+</html>

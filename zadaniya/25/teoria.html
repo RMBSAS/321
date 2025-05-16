@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Задание 25 — Теория</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../assets/style.css" />
+</head>
+<body>
+  <h1>Задание 25 — Теория</h1>
+  <nav>
+    <a href="../../index.html">На главную</a> |
+    <a href="praktika.html">Практика</a>
+  </nav>
+
+  <section>
+    <h2>Обработка целочисленной информации (без сортировки)</h2>
+
+    <p><strong>Описание:</strong> Задание предполагает работу с числами: проверку их свойств, подсчёт, нахождение делителей, сумм цифр и пр. Обычно обрабатываются числа из диапазона с помощью одного или двух вложенных циклов.</p>
+
+    <p><strong>Навыки:</strong> Работа с целыми числами:
+      <ul>
+        <li>перебор диапазона с помощью <code>for</code> или <code>while</code>;</li>
+        <li>нахождение делителей, суммы/произведения цифр, количества цифр;</li>
+        <li>условные конструкции <code>if</code> для фильтрации чисел;</li>
+        <li>вывод нужных чисел и/или подсчёт их количества.</li>
+      </ul>
+    </p>
+
+    <h3>Пример</h3>
+    <p>Найти все числа от <code>126849</code> до <code>126871</code> с ровно четырьмя делителями и вывести их делители:</p>
+    <pre><code># Python
+for n in range(126849, 126872):
+    divisors = [d for d in range(1, n+1) if n % d == 0]
+    if len(divisors) == 4:
+        print(n, divisors)</code></pre>
+
+    <h3>Решение</h3>
+    <ul>
+      <li>Заводим цикл по всем числам из диапазона;</li>
+      <li>Для каждого числа проверяем нужное условие: кол-во делителей, сумма цифр и пр.;</li>
+      <li>Если условие выполняется — выводим число или изменяем счётчик/максимум и т.п.;</li>
+      <li>В конце — вывод результата (список чисел, их делителей, кол-во и пр.).</li>
+    </ul>
+
+    <h3>Полезные функции (Python)</h3>
+    <ul>
+      <li><code>range(start, end)</code> — генерация диапазона чисел (включает <code>start</code>, но не <code>end</code>);</li>
+      <li><code>n % d == 0</code> — проверка, что <code>d</code> — делитель <code>n</code>;</li>
+      <li><code>sum(map(int, str(n)))</code> — сумма цифр числа <code>n</code>;</li>
+      <li><code>len([...])</code> — количество элементов в списке (например, делителей).</li>
+    </ul>
+
+    <h3>Советы и ошибки</h3>
+    <ul>
+      <li>Не забудьте включить правую границу диапазона (например, <code>range(a, b+1)</code>);</li>
+      <li>При поиске делителей используйте <code>range(1, n+1)</code>, либо оптимизированный подход с <code>sqrt(n)</code>;</li>
+      <li>Если работаете с цифрами — преобразуйте число в строку: <code>str(n)</code>;</li>
+      <li>Внимательно проверяйте условия: <code>==</code> (равно), <code>!=</code> (не равно), <code>&gt;</code>, <code>&lt;</code> и т.д.</li>
+    </ul>
+
+  </section>
+</body>
+</html>

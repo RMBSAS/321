@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Задание 24 — Практика</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../assets/style.css" />
+</head>
+<body>
+  <h1>Задание 24 — Практика</h1>
+  <nav>
+    <a href="../../index.html">На главную</a> |
+    <a href="teoria.html">Теория</a>
+  </nav>
+  <section>
+    <h2>Практическое задание</h2>
+    <p>
+      В текстовом файле содержатся символы T, U, V, W, X, Y, Z. Определите максимальную длину (количество подряд) фрагмента, в котором буква T встречается ровно 100 раз. Для выполнения этого задания необходимо написать программу; в ответ запишите только найденное число.
+    </p>
+
+    <h2>Решение на Python</h2>
+    <pre><code>def max_length_with_100_Ts(s):
+    left = 0
+    count_T = 0
+    max_len = 0
+    for right in range(len(s)):
+        if s[right] == 'T':
+            count_T += 1
+        while count_T > 100:
+            if s[left] == 'T':
+                count_T -= 1
+            left += 1
+        if count_T == 100:
+            max_len = max(max_len, right - left + 1)
+    return max_len
+
+# Пример чтения из файла:
+with open("24.txt") as f:
+    data = f.read().strip()
+    print(max_length_with_100_Ts(data))</code></pre>
+    <p>
+      Эта программа находит максимальную длину фрагмента строки, содержащего ровно 100 букв T. Она эффективно использует скользящее окно (двойной указатель).
+    </p>
+  </section>
+</body>
+</html>

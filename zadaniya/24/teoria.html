@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Задание 24 — Теория</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../assets/style.css" />
+</head>
+<body>
+  <h1>Задание 24 — Теория</h1>
+  <nav>
+    <a href="../../index.html">На главную</a> |
+    <a href="praktika.html">Практика</a>
+  </nav>
+
+  <section>
+    <h2>Обработка символьной информации</h2>
+
+    <p><strong>Описание:</strong> Необходимо проанализировать строку текста и выполнить операцию — подсчёт символов, изменение строки, поиск подстроки, фильтрация по условию и т.д. Чаще всего — пройтись по строке в цикле и сформировать результат по условию.</p>
+
+    <p><strong>Навыки:</strong> Знание базовых операций над строками:
+      <ul>
+        <li>доступ к символам строки по индексу;</li>
+        <li>проверка типа символа (буква, цифра и т.д.);</li>
+        <li>поиск/замена символов или подстрок;</li>
+        <li>формирование новой строки на основе условия;</li>
+        <li>работа с функциями <code>len()</code>, <code>isdigit()</code>, <code>lower()</code>, <code>replace()</code> и др.</li>
+      </ul>
+    </p>
+
+    <h3>Пример</h3>
+    <pre><code># Python
+s = "AB1C2D3"
+summa = 0
+for c in s:
+    if c.isdigit():
+        summa += int(c)
+print(summa)</code></pre>
+    <p><strong>Результат:</strong> программа находит сумму цифр: 1 + 2 + 3 = <strong>6</strong>.</p>
+
+    <h3>Решения</h3>
+    <ul>
+      <li>Создаём переменную-накопитель (строку, число, список и т.п.);</li>
+      <li>Проходим по каждому символу строки в цикле <code>for</code>;</li>
+      <li>Проверяем условие (например, <code>if c in 'ABC'</code> или <code>c == '.'</code>);</li>
+      <li>Изменяем результат (добавляем к строке, считаем, пропускаем и т.д.);</li>
+      <li>Выводим результат.</li>
+    </ul>
+
+    <h3>Советы и ошибки</h3>
+    <ul>
+      <li>Строки индексируются с 0 (в Python) — не перепутайте при доступе <code>s[0]</code>;</li>
+      <li>Для нечувствительности к регистру можно использовать <code>s.lower()</code> или <code>s.upper()</code> перед проверкой;</li>
+      <li>Для удаления символов используйте <code>replace()</code> или формируйте новую строку без них;</li>
+      <li>Проверяйте <code>isdigit()</code> перед приведением к числу — иначе может быть ошибка.</li>
+    </ul>
+
+    <h3>Полезные функции</h3>
+    <ul>
+      <li><code>c.isdigit()</code> — проверка: символ — цифра;</li>
+      <li><code>c.isalpha()</code> — символ — буква;</li>
+      <li><code>s.find('abc')</code> — позиция подстроки или -1;</li>
+      <li><code>s.replace('A','')</code> — удалить все 'A';</li>
+      <li><code>len(s)</code> — длина строки.</li>
+    </ul>
+  </section>
+</body>
+</html>

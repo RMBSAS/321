@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Задание 26 — Практика</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../assets/style.css" />
+</head>
+<body>
+  <h1>Задание 26 — Практика</h1>
+  <nav>
+    <a href="../../index.html">На главную</a> |
+    <a href="teoria.html">Теория</a>
+  </nav>
+  <section>
+    <h2>Практическое задание</h2>
+    <p>
+      В файле содержится информация о мероприятиях: в каждой заявке – время начала и окончания. Если время начала одного мероприятия меньше, чем окончание другого, их нельзя оба провести. Если время окончания одного совпадает с началом другого, провести можно оба. Определите максимальное число мероприятий, которые можно провести, и при этом максимальный возможный перерыв между двумя <strong>последними</strong> мероприятиями (в минутах). В ответе запишите два числа: сначала максимальное число мероприятий, затем максимальный перерыв.
+    </p>
+
+    <h2>Решение на Python</h2>
+    <pre><code>with open("26.txt") as f:
+    n = int(f.readline())
+    events = [tuple(map(int, line.split())) for line in f]
+
+events.sort(key=lambda x: x[1])
+result = []
+last_end = -1
+
+for start, end in events:
+    if start >= last_end:
+        result.append((start, end))
+        last_end = end
+
+max_gap = 0
+for i in range(1, len(result)):
+    gap = result[i][0] - result[i-1][1]
+    max_gap = max(max_gap, gap)
+
+print(len(result), max_gap)</code></pre>
+    <p>
+      Алгоритм реализует жадный выбор мероприятий по окончанию и затем ищет максимальный перерыв между двумя последними из выбранных мероприятий.
+    </p>
+  </section>
+</body>
+</html>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Задание 13 — Практика</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../assets/style.css" />
+</head>
+<body>
+  <h1>Задание 13 — Практика</h1>
+  <nav>
+    <a href="../../index.html">На главную</a> |
+    <a href="teoria.html">Теория</a>
+  </nav>
+  <section>
+    <h2>Практическое задание</h2>
+    <p><strong>Часть 1.</strong> В сети с адресом <code>192.168.32.160</code> и маской <code>255.255.255.240</code> найдите, сколько в этой сети IP-адресов имеют <em>чётную</em> сумму единиц в двоичной записи адреса. Ответ – число.</p>
+    <p><strong>Часть 2.</strong> (не решается в ЕГЭ) – дополнительное условие, не включается в таблицу ответов.</p>
+    <h2>Решение на Python</h2>
+    <pre><code>import ipaddress
+
+# Определяем сеть
+net = ipaddress.ip_network('192.168.32.160/28', strict=False)
+
+count_even = 0
+# Перебираем все адреса внутри сети (включая network and broadcast)
+for addr in net:
+    # Считаем единицы в 32-битном представлении
+    ones = bin(int(addr)).count('1')
+    if ones % 2 == 0:
+        count_even += 1
+
+print(count_even)  # число адресов с чётной суммой единиц
+</code></pre>
+  </section>
+</body>
+</html>

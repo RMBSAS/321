@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Задание 27 — Практика</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../assets/style.css" />
+</head>
+<body>
+  <h1>Задание 27 — Практика</h1>
+  <nav>
+    <a href="../../index.html">На главную</a> |
+    <a href="teoria.html">Теория</a>
+  </nav>
+  <section>
+    <h2>Практическое задание</h2>
+    <p>
+      В файле передаются данные прибора: последовательность N показаний (целые числа) с каждой минуты (N может быть до 10 млн). Даны два файла (A и B): в первой строке каждого – число <code>K</code> (минимальное расстояние между выбранными моментами в минутах), во второй – <code>N</code>. Найдите три переданных числа (в каждой из последовательностей), чтобы между любыми двумя из них прошло не менее <code>K</code> минут, а сумма этих трёх чисел была максимальна. Запишите два числа: максимальную сумму для файла A и для файла B.
+    </p>
+
+    <h2>Решение на Python</h2>
+    <pre><code>def find_max_sum(filename):
+    with open(filename) as f:
+        k = int(f.readline())
+        n = int(f.readline())
+        data = [int(line) for line in f]
+
+    max_sum = 0
+    best = [0] * n
+    
+    # Префиксный максимум
+    max_before = [0] * n
+    max_before[0] = data[0]
+    for i in range(1, n):
+        max_before[i] = max(max_before[i-1], data[i])
+
+    for j in range(k, n):
+        for i in range(j + k, n):
+            max_sum = max(max_sum, data[i] + data[j] + max_before[j - k])
+
+    return max_sum
+
+print(find_max_sum("27-A.txt"), find_max_sum("27-B.txt"))</code></pre>
+    <p>
+      Алгоритм проходит по массиву показаний и для каждой возможной комбинации трёх точек с необходимым интервалом <code>K</code> выбирает максимальную сумму. Используется префиксный максимум для оптимизации выбора первой точки.
+    </p>
+  </section>
+</body>
+</html>

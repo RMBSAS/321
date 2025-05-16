@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Задание 7 — Практика</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+  <h1>Задание 7 — Практика</h1>
+  <nav>
+    <a href="../../index.html">На главную</a> |
+    <a href="teoria.html">Теория</a>
+  </nav>
+  <section>
+    <h2>Практическое задание</h2>
+    <p><strong>Исполнитель «Черепаха»</strong> действует на плоскости. После выполнения алгоритма появляется несколько замкнутых фигур:</p>
+    <pre><code>Повтори 2 [Вперёд 8 Направо 90 Вперёд 18 Направо 90]
+Поднять хвост
+Вперёд 4 Направо 90 Вперёд 10 Налево 90
+Опустить хвост
+Повтори 2 [Вперёд 17 Направо 90 Вперёд 7 Направо 90]</code></pre>
+    <p>Определите, сколько точек с целочисленными координатами будут находиться <strong>внутри объединения</strong> этих фигур (включая точки на границах).</p>
+    <h2>Решение на Python</h2>
+    <pre><code>import math
+from shapely.geometry import Polygon, Point
+from shapely.ops import unary_union
+
+# Функция для выполнения фрагмента команд и сбора контура
+def draw(commands):
+    x, y = 0.0, 0.0
+    angle = 90  # начальное направление вдоль оси y
+    tail = True
+    shapes = []
+    current = [(x, y)] if tail else []
+
+    for cmd in commands:
+        parts = cmd.split()
+        if parts[0] == 'Вперёд':
+            dist = float(parts[1])
+            rad = math.radians(angle)
+            x += dist * math.cos(rad)
+            y += dist * math.sin(rad)
+            if tail:
+                current.append((x, y))
+        elif parts[0] == 'Назад':
+            dist = float(parts[1])
+            rad = math.radians(angle)
+            x -= dist * math.cos(rad)
+            y -= dist * math.sin(rad)
+            if tail:
+                current.append((x, y))
+        elif parts[0] == 'Направо':
+            angle -= float(parts[1])
+        elif parts[0] == 'Налево':
+            angle += float(parts[1])
+        elif parts[0] == 'Поднять':
+            if tail and len(current) > 1:
+                shapes.append(Polygon(current))
+            tail = False
+            current = []
+        elif parts[0] == 'Опустить':
+            tail = True
+            current = [(x, y)]
+        elif parts[0] == 'Повтори':
+            count = int(parts[1])
+            # extract block
+            block = ' '.join(commands[commands.index(cmd)+1:]).strip()
+            # not implemented for simplicity
+            pass
+    return shapes
+
+# Для этого задания можно вручную разбить на три части:
+block1 = ['Вперёд 8', 'Направо 90', 'Вперёд 18', 'Направо 90'] * 2
+block2 = ['Поднять хвост', 'Вперёд 4', 'Направо 90', 'Вперёд 10', 'Налево 90', 'Опустить хвост']
+block3 = ['Вперёд 17', 'Направо 90', 'Вперёд 7', 'Направо 90'] * 2
+
+shapes = draw(block1 + block2 + block3)
+
+# Объединяем все полигоны
+union = unary_union(shapes)
+
+# Подсчёт целочисленных точек внутри или на границе
+minx, miny, maxx, maxy = map(math.floor, union.bounds)
+count = 0
+for xi in range(minx, maxx+1):
+    for yi in range(miny, maxy+1):
+        p = Point(xi, yi)
+        if union.covers(p):
+            count += 1
+print(f"Точек внутри объединения (включая границы): {count}")</code></pre>
+  </section>
+</body>
+</html>

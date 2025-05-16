@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Задание 2 — Практика</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+  <h1>Задание 2 — Практика</h1>
+  <nav>
+    <a href="../../index.html">На главную</a> |
+    <a href="teoria.html">Теория</a>
+  </nav>
+  <section>
+    <h2>Практическое задание</h2>
+    <p>Дана частично заполненная таблица истинности логической функции <code>F = (x &amp; ¬y) ∨ (y ≡ z) ∨ ¬w</code>. Миша заполнял её фрагмент, но не указал, какому столбцу соответствует каждая из переменных <strong>w, x, y, z</strong>. Определите порядок переменных <strong>w, x, y, z</strong> по столбцам таблицы (сначала буква, соответствующая первому столбцу, и т.д.).</p>
+    <h2>Решение на Python</h2>
+    <pre><code>import itertools
+
+# Фрагмент таблицы истинности: список строк вида ([col1, col2, col3, col4], F)
+# Замените примерный фрагмент на реальный из условия
+fragment = [
+    ([0, 0, 0, 0], 1),
+    ([0, 0, 0, 1], 1),
+    ([1, 0, 1, 0], 1),
+    # ... добавьте остальные строки фрагмента
+]
+
+variables = ['w', 'x', 'y', 'z']
+
+# Проверка всех перестановок
+for perm in itertools.permutations(variables):
+    valid = True
+    for cols, f_val in fragment:
+        # создаём словарь переменных для текущей строки
+        assign = dict(zip(perm, cols))
+        w, x, y, z = assign['w'], assign['x'], assign['y'], assign['z']
+        # вычисляем функцию F
+        F = (x and not y) or (y == z) or (not w)
+        if int(F) != f_val:
+            valid = False
+            break
+    if valid:
+        print('Порядок столбцов:', ''.join(perm))  # например, 'xwyz'
+        break</code></pre>
+    <p>Заполните <code>fragment</code> реальными данными из таблицы, запустите скрипт, и он выведет нужный порядок переменных по столбцам.</p>
+  </section>
+</body>
+</html>

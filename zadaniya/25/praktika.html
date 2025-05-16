@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Задание 25 — Практика</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../assets/style.css" />
+</head>
+<body>
+  <h1>Задание 25 — Практика</h1>
+  <nav>
+    <a href="../../index.html">На главную</a> |
+    <a href="teoria.html">Теория</a>
+  </nav>
+  <section>
+    <h2>Практическое задание</h2>
+    <p>
+      Называется маской числа последовательность, в которой цифра «?» – любая одна цифра, «*» – любая последовательность цифр (в том числе пустая). Маске 1?2157*4 соответствуют все числа вида 1A2157B4 (например, 123215734 и 1202157004). Среди натуральных чисел, ≤ 10<sup>10</sup>, найдите все числа, соответствующие маске 1?2157*4 и делящиеся на 2024 без остатка. Запишите в первом столбце все найденные числа (по возрастанию), во втором – результаты деления этих чисел на 2024.
+    </p>
+
+    <h2>Решение на Python</h2>
+    <pre><code>def matches_mask(n):
+    from fnmatch import fnmatch
+    return fnmatch(str(n), '1?2157*4')
+
+for i in range(10**9, 10**10):
+    if matches_mask(i) and i % 2024 == 0:
+        print(i, i // 2024)</code></pre>
+    <p>
+      В этом решении используется функция <code>fnmatch</code> для проверки соответствия чисел заданной маске. Перебор происходит в пределах до 10<sup>10</sup>, но с учётом производительности рекомендуется добавить оптимизацию — например, перебирать только числа, кратные 2024.
+    </p>
+  </section>
+</body>
+</html>

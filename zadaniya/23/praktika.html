@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Задание 23 — Практика</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../assets/style.css" />
+</head>
+<body>
+  <h1>Задание 23 — Практика</h1>
+  <nav>
+    <a href="../../index.html">На главную</a> |
+    <a href="teoria.html">Теория</a>
+  </nav>
+  <section>
+    <h2>Практическое задание</h2>
+    <p>
+      <strong>Исполнитель преобразует число на экране</strong>. У исполнителя есть команды: A – прибавить 1, B – умножить на 2, C – возвести в квадрат. Программа – последовательность команд. Сколько существует программ, которые при исходном числе 2 дают результат 20 <strong>и при этом</strong> траектория вычислений программы не содержит число 11? (Траектория – это последовательность значений после каждой команды).
+    </p>
+
+    <h2>Решение на Python</h2>
+    <pre><code>def count_programs(start, end, forbidden):
+    count = 0
+    def dfs(current):
+        nonlocal count
+        if current == end:
+            count += 1
+            return
+        if current > end or current == forbidden:
+            return
+        dfs(current + 1)  # A
+        dfs(current * 2)  # B
+        dfs(current ** 2)  # C
+    dfs(start)
+    return count
+
+print(count_programs(2, 20, 11))</code></pre>
+    <p>
+      Эта программа считает количество различных последовательностей команд A, B и C, которые превращают число 2 в 20 без прохождения через 11.
+    </p>
+  </section>
+</body>
+</html>

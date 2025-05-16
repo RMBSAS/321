@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Задание 14 — Практика</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../assets/style.css" />
+</head>
+<body>
+  <h1>Задание 14 — Практика</h1>
+  <nav>
+    <a href="../../index.html">На главную</a> |
+    <a href="teoria.html">Теория</a>
+  </nav>
+  <section>
+    <h2>Практическое задание</h2>
+    <p>Вариант 1:<br>
+    В записи выражения <code>98897<sub>19</sub> × x211<sub>19</sub> + 2x923<sub>19</sub></code> цифра <code>x</code> – неизвестный символ (10≤x≤18). Найдите наибольшее <code>x</code>, при котором значение выражения кратно 18. Для этого <code>x</code> вычислите частное от деления выражения на 18 (в десятичной системе).</p>
+    <p>Вариант 2:<br>
+    Рассмотрено выражение <code>3·31258 + 2·6257 – 4·6256 + 3·1255 – 2·254 – 2024</code>. Это значение записали в системе счисления с основанием 25. Сколько значащих нулей содержит эта запись? Ответ – число.</p>
+    <h2>Решение на Python</h2>
+    <pre><code>def to_decimal(s, base):
+    return int(s, base)
+
+# Вариант 1
+max_x = None
+quotient = None
+for x in range(18, 9, -1):
+    term1 = to_decimal('98897', 19)
+    term2 = to_decimal(f"{x}211", 19)
+    term3 = to_decimal(f"2{x}923", 19)
+    val = term1 * term2 + term3
+    if val % 18 == 0:
+        max_x = x
+        quotient = val // 18
+        break
+print(f"Вариант1: x={max_x}, частное={quotient}")
+
+# Вариант 2
+val2 = (
+    3*3125**8 +
+    2*6257 +
+    -4*6256 +
+    3*1255 +
+    -2*254 +
+    -2024
+)
+# Запись в основание 25
+s25 = ''
+num = val2
+while num > 0:
+    s25 = "0123456789ABCDEFGHIJ"[num % 25] + s25
+    num //= 25
+# Подсчёт значащих нулей (между ненулевыми цифрами и в конце, но не ведущих)
+s = s25.rstrip('0')  # убрать конечные, они значащие? уточнить
+zeros = s25.count('0') - (len(s25) - len(s))
+print(f"Вариант2: значащие нули={zeros}")
+</code></pre>
+  </section>
+</body>
+</html>

@@ -1,0 +1,153 @@
+/* assets/style.css - футуристичный минималистичный дизайн */
+
+:root {
+  --bg: #0d0f12;
+  --fg: #e1e1e6;
+  --accent: #00e5ff;
+  --muted: #4a4f57;
+  --radius: 0.5rem;
+  --transition: 0.3s;
+}
+
+html {
+  box-sizing: border-box;
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
+*, *::before, *::after {
+  box-sizing: inherit;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Orbitron', sans-serif;
+  background-color: var(--bg);
+  color: var(--fg);
+  line-height: 1.6;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+}
+
+h1, h2 {
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+h1 {
+  font-size: 2.5rem;
+  margin-bottom: 1.5rem;
+  color: var(--accent);
+  text-align: center;
+}
+
+ul {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 1rem;
+  width: 100%;
+  max-width: 800px;
+  padding: 0;
+}
+
+li {
+  background: #16191e;
+  border: 1px solid var(--muted);
+  border-radius: var(--radius);
+  padding: 1rem;
+  transition: background var(--transition), border-color var(--transition);
+}
+
+li:hover {
+  background: #1e232a;
+  border-color: var(--accent);
+}
+
+li a {
+  text-decoration: none;
+  color: var(--fg);
+  display: block;
+  margin: 0.5rem 0;
+  transition: color var(--transition);
+}
+
+li a:first-child {
+  color: var(--accent);
+  font-weight: bold;
+}
+
+li a:hover {
+  color: var(--accent);
+}
+
+nav {
+  margin: 1rem 0;
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+nav a {
+  text-decoration: none;
+  color: var(--fg);
+  border: 1px solid var(--muted);
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius);
+  transition: background var(--transition), color var(--transition), border-color var(--transition);
+}
+
+nav a:hover {
+  background: var(--accent);
+  color: var(--bg);
+  border-color: var(--accent);
+}
+
+section {
+  background: #16191e;
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  margin-top: 1rem;
+  width: 100%;
+  max-width: 800px;
+}
+
+ol {
+  padding-left: 1.5rem;
+}
+
+@media (max-width: 600px) {
+  html {
+    font-size: 15px;
+  }
+
+  body {
+    padding: 1rem;
+  }
+
+  h1 {
+    font-size: 2rem;
+  }
+
+  nav {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  ul {
+    grid-template-columns: 1fr;
+  }
+
+  section {
+    padding: 1rem;
+  }
+
+  nav a {
+    width: 100%;
+    text-align: center;
+  }
+} 

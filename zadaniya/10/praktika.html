@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Задание 10 — Практика</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+  <h1>Задание 10 — Практика</h1>
+  <nav>
+    <a href="../../index.html">На главную</a> |
+    <a href="teoria.html">Теория</a>
+  </nav>
+  <section>
+    <h2>Практическое задание</h2>
+    <p>В тексте главы II повести А.И. Куприна «Поединок» определить, сколько раз встречается сочетание букв «все» или «Все» только в составе других слов (не как самостоятельное слово). В ответе – только число.</p>
+    <h2>Решение на Python</h2>
+    <pre><code>import re
+
+# Считываем текст главы II из файла
+with open('chapter2.txt', 'r', encoding='utf-8') as f:
+    text = f.read()
+
+# Регулярное выражение: ищем 'все' или 'Все' внутри слов
+pattern = re.compile(r'(?<!\b)[Вв]се(?!\b)')
+matches = pattern.findall(text)
+
+print(len(matches))  # Вывод количества вхождений</code></pre>
+    <p>Поместите текст главы II в файл <code>chapter2.txt</code> рядом со скриптом и запустите скрипт. Он выведет искомое число.</p>
+  </section>
+</body>
+</html>

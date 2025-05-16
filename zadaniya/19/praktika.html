@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Задание 19 — Практика</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../assets/style.css" />
+</head>
+<body>
+  <h1>Задание 19 — Практика</h1>
+  <nav>
+    <a href="../../index.html">На главную</a> |
+    <a href="teoria.html">Теория</a>
+  </nav>
+  <section>
+    <h2>Практическое задание</h2>
+    <p>
+      Игра «Камни»: у игроков есть куча. Петя начинает. За ход можно либо добавить 1 камень, либо удвоить количество камней в куче. Игра заканчивается, когда камней становится ≥ 129; победитель – сделавший последний ход. Пусть в начале было <code>S</code> камней (1 ≤ S ≤ 128). Найдите минимальное <code>S</code>, при котором Петя <strong>не</strong> может выиграть за один ход, но при любом ходе Пети Ваня выигрывает своим первым ходом.
+    </p>
+
+    <h2>Решение на Python</h2>
+    <pre><code>def can_win(s):
+    return s + 1 >= 129 or s * 2 >= 129
+
+# Петя не выигрывает за 1 ход, но любой его ход приводит к победе Вани
+for s in range(1, 129):
+    if not can_win(s):
+        next_moves = [s + 1, s * 2]
+        if all(can_win(move) for move in next_moves):
+            print("Ответ:", s)
+            break</code></pre>
+    <p>
+      В этом коде мы проверяем, при каком минимальном <code>S</code> Петя не выигрывает сразу, но любое его действие (добавить 1 или удвоить) приводит к выигрышной позиции для Вани.
+    </p>
+  </section>
+</body>
+</html>

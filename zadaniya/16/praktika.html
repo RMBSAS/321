@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Задание 16 — Практика</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../assets/style.css" />
+</head>
+<body>
+  <h1>Задание 16 — Практика</h1>
+  <nav>
+    <a href="../../index.html">На главную</a> |
+    <a href="teoria.html">Теория</a>
+  </nav>
+  <section>
+    <h2>Практическое задание</h2>
+    <p>Алгоритм вычисления функции <code>F(n)</code> задан рекурсивно:</p>
+    <ul>
+      <li><code>F(n) = n</code>, если <code>n > 2024</code>;</li>
+      <li><code>F(n) = n * F(n+1)</code>, если <code>n ≤ 2024</code>;</li>
+    </ul>
+    <p>Найдите значение выражения <code>F(2022) / F(2024)</code>.</p>
+    <h2>Решение на Python</h2>
+    <pre><code>import math
+
+def F(n):
+    if n > 2024:
+        return n
+    return n * F(n+1)
+
+# Однако можно вывести формулу:
+# F(2022) = 2022 * 2023 * 2024 * F(2025)
+# F(2024) = 2024 * F(2025)
+# => F(2022)/F(2024) = 2022 * 2023
+
+result = 2022 * 2023
+print(result)  # Ответ задачи</code></pre>
+  </section>
+</body>
+</html>

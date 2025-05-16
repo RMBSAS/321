@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Задание 5 — Практика</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+  <h1>Задание 6 — Практика</h1>
+  <nav>
+    <a href="../../index.html">На главную</a> |
+    <a href="teoria.html">Теория</a>
+  </nav>
+  <section>
+    <h2>Практическое задание</h2>
+    <p><strong>Исполнитель «Черепаха»</strong> действует на плоскости с декартовой системой координат. В начальный момент черепаха в начале координат, голова направлена вдоль оси <em>y</em>, хвост опущен (рисует линии). Даны две команды: «Вперёд <em>n</em>» (перейти на <em>n</em> вперед) и «Направо <em>m</em>» (повернуться на <em>m</em> градусов по часовой стрелке). Запись <code>Повтори 7 [Вперёд 10 Направо 120]</code> означает повтор последовательности внутри скобок 7 раз. Выполняется алгоритм:</p>
+    <pre><code>Повтори 7 [Вперёд 10 Направо 120]</code></pre>
+    <p>Определите, сколько точек с целочисленными координатами будут находиться <strong>внутри</strong> области, ограниченной линией, заданной этим алгоритмом (точки на границе не считаются).</p>
+    <h2>Решение на Python</h2>
+    <pre><code>import math
+from shapely.geometry import Polygon, Point
+
+# Генерируем вершины многоугольника
+x, y = 0.0, 0.0
+angle = 90  # начальное направление вдоль оси y
+vertices = []
+
+for _ in range(7):
+    # Вперёд 10
+    rad = math.radians(angle)
+    x += 10 * math.cos(rad)
+    y += 10 * math.sin(rad)
+    vertices.append((x, y))
+    # Направо 120
+    angle -= 120
+
+# Закрываем полигон
+poly = Polygon(vertices)
+
+# Находим границы для обхода точек
+minx, miny, maxx, maxy = map(math.floor, poly.bounds)
+
+count = 0
+for xi in range(minx+1, maxx):
+    for yi in range(miny+1, maxy):
+        if poly.contains(Point(xi, yi)):
+            count += 1
+
+print(f"Число целочисленных точек внутри: {count}")</code></pre>
+  </section>
+</body>

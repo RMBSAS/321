@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Задание 9 — Практика</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+  <h1>Задание 9 — Практика</h1>
+  <nav>
+    <a href="../../index.html">На главную</a> |
+    <a href="teoria.html">Теория</a>
+  </nav>
+  <section>
+    <h2>Практическое задание</h2>
+    <p>Сколько существует восьмеричных пятизначных чисел, не содержащих в записи цифру 1, в которых все цифры различны и никакие две чётные или две нечётные цифры не стоят рядом? (Ответ – одно число без пояснений).</p>
+    <h2>Решение на Python</h2>
+    <pre><code>count = 0
+# Множества чётных и нечётных цифр в восьмеричной системе
+even = {'0','2','4','6'}
+odd = {'3','5','7'}  # исключаем '1'
+
+for num in range(0o10000, 0o100000):  # от 8^4 до 8^5-1
+    s = format(num, 'o')
+    # Проверка длины и отсутствия '1'
+    if len(s) != 5 or '1' in s:
+        continue
+    # Все цифры должны быть различны
+    if len(set(s)) != 5:
+        continue
+    # Проверка, что нет двух подряд чётных или нечётных
+    valid = True
+    for i in range(4):
+        if (s[i] in even and s[i+1] in even) or (s[i] in odd and s[i+1] in odd):
+            valid = False
+            break
+    if valid:
+        count += 1
+
+print(count)  # Ответ задачи</code></pre>
+  </section>
+</body>
+</html>

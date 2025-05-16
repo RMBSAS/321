@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Задание 11 — Практика</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+  <h1>Задание 11 — Практика</h1>
+  <nav>
+    <a href="../../index.html">На главную</a> |
+    <a href="teoria.html">Теория</a>
+  </nav>
+  <section>
+    <h2>Практическое задание</h2>
+    <p>В компьютерной системе каждому объекту присваивается идентификатор из 60 символов (только цифры и специальные символы алфавита). Для хранения каждого идентификатора используется одинаковое целое число байт, при этом применяется посимвольное кодирование (для каждого символа 11 бит). Определите объём памяти (в Кбайтах) для хранения 65 536 таких идентификаторов.</p>
+    <h2>Решение на Python</h2>
+    <pre><code>import math
+
+# Параметры
+symbols = 60            # количество символов в идентификаторе
+bits_per_symbol = 11    # бит на символ
+count_ids = 65536       # число идентификаторов
+
+# Вычисляем биты и байты на один идентификатор
+total_bits = symbols * bits_per_symbol
+bytes_per_id = math.ceil(total_bits / 8)
+
+# Общий объём в байтах
+total_bytes = bytes_per_id * count_ids
+
+# Перевод в Кбайты (1 KB = 1024 байта)
+total_kb = total_bytes // 1024
+
+print(total_kb)  # Объём памяти в Кбайтах
+</code></pre>
+  </section>
+</body>
+</html>

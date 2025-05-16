@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Задание 20 — Практика</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../assets/style.css" />
+</head>
+<body>
+  <h1>Задание 20 — Практика</h1>
+  <nav>
+    <a href="../../index.html">На главную</a> |
+    <a href="teoria.html">Теория</a>
+  </nav>
+  <section>
+    <h2>Практическое задание</h2>
+    <p>
+      Игра «Камни»: у игроков есть куча. Петя начинает. За ход можно либо добавить 1 камень, либо удвоить количество камней в куче. Игра заканчивается, когда камней становится ≥ 129; победитель – сделавший последний ход. Пусть в начале было <code>S</code> камней (1 ≤ S ≤ 128). Найдите два наименьших значения <code>S</code>, при которых у Пети есть выигрышная стратегия при одновременном выполнении: Петя не может выиграть за один ход, но Петя может выиграть вторым ходом независимо от ходов Вани.
+    </p>
+
+    <h2>Решение на Python</h2>
+    <pre><code>def can_win(s):
+    return s + 1 >= 129 or s * 2 >= 129
+
+def petya_second_win(s):
+    if can_win(s):
+        return False
+    next_moves = [s + 1, s * 2]
+    for move in next_moves:
+        # Ваня ходит из позиции move
+        vanya_moves = [move + 1, move * 2]
+        if all(can_win(vm) for vm in vanya_moves):
+            continue
+        break
+    else:
+        return True
+    return False
+
+count = 0
+for s in range(1, 129):
+    if petya_second_win(s):
+        print(s, end=' ')
+        count += 1
+        if count == 2:
+            break</code></pre>
+    <p>
+      Этот код ищет первые два значения <code>S</code>, при которых Петя не выигрывает за один ход, но может гарантированно выиграть вторым ходом вне зависимости от действий Вани.
+    </p>
+  </section>
+</body>
+</html>

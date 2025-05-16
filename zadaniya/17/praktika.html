@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Задание 17 — Практика</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../assets/style.css" />
+</head>
+<body>
+  <h1>Задание 17 — Практика</h1>
+  <nav>
+    <a href="../../index.html">На главную</a> |
+    <a href="teoria.html">Теория</a>
+  </nav>
+  <section>
+    <h2>Практическое задание</h2>
+    <p>В файле дана последовательность натуральных чис (каждое ≤ 100000). Определите два значения:</p>
+    <ol>
+      <li>количество троек подряд идущих элементов, в которых ровно два из трёх – трёхзначные числа, а сумма троек не превышает максимального числа последовательности, оканчивающегося на 13;</li>
+      <li>максимальную из сумм таких троек.</li>
+    </ol>
+    <p>Запишите два числа: количество и найденную максимальную сумму.</p>
+    <h2>Решение на Python</h2>
+    <pre><code># Читаем числа из файла
+data = [int(line) for line in open('data17.txt')]
+
+# Находим максимальное число, оканчивающееся на 13
+max_end13 = max(x for x in data if x % 100 == 13)
+
+count = 0
+max_sum = 0
+# Перебираем все тройки подряд
+for i in range(len(data) - 2):
+    triple = data[i:i+3]
+    # ровно два трёхзначных
+    three_digit = sum(100 <= x <= 999 for x in triple)
+    s = sum(triple)
+    if three_digit == 2 and s <= max_end13:
+        count += 1
+        max_sum = max(max_sum, s)
+
+print(count, max_sum)  # Вывод: количество троек и максимальная сумма</code></pre>
+  </section>
+</body>
+</html>

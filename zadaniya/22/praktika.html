@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Задание 22 — Практика</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../assets/style.css" />
+</head>
+<body>
+  <h1>Задание 22 — Практика</h1>
+  <nav>
+    <a href="../../index.html">На главную</a> |
+    <a href="teoria.html">Теория</a>
+  </nav>
+  <section>
+    <h2>Практическое задание</h2>
+    <p>
+      В файле описаны процессы: каждый процесс имеет идентификатор (ID), время выполнения и перечисление процессов, от которых он зависит (0 – если независимый). Процессы, не зависящие друг от друга, могут выполняться параллельно. Определите максимальную длительность отрезка времени (мс), в течение которого возможно одновременное выполнение <strong>четырёх</strong> процессов (при условии, что все независимые процессы могут идти параллельно).
+    </p>
+
+    <h2>Решение на Python</h2>
+    <pre><code>def parse_processes(filename):
+    with open(filename) as f:
+        processes = []
+        for line in f:
+            parts = line.strip().split()
+            pid = int(parts[0])
+            time = int(parts[1])
+            deps = list(map(int, parts[2:]))
+            processes.append((pid, time, deps))
+    return processes
+
+def build_start_times(processes):
+    from collections import defaultdict
+    start = defaultdict(int)
+    by_id = {pid: (time, deps) for pid, time, deps in processes}
+    def dfs(pid):
+        time, deps = by_id[pid]
+        if not deps or deps == [0]:
+            return 0
+        return max(dfs(dep) + by_id[dep][0] for dep in deps)
+    for pid, _, _ in processes:
+        start[pid] = dfs(pid)
+    return [(start[pid], start[pid] + by_id[pid][0]) for pid in by_id]
+
+def max_overlap(intervals):
+    timeline = []
+    for start, end in intervals:
+        timeline.append((start, 1))
+        timeline.append((end, -1))
+    timeline.sort()
+    cur = max4 = 0
+    time4 = 0
+    prev_time = 0
+    for time, delta in timeline:
+        if cur == 4:
+            time4 += time - prev_time
+        cur += delta
+        prev_time = time
+    return time4
+
+# Пример использования
+processes = parse_processes("22.txt")
+intervals = build_start_times(processes)
+print(max_overlap(intervals))</code></pre>
+    <p>
+      Этот код загружает список процессов с зависимостями и временем выполнения, определяет интервалы их возможного старта и завершения, затем находит максимальный отрезок, когда ровно четыре процесса могли выполняться одновременно.
+    </p>
+  </section>
+</body>
+</html>
