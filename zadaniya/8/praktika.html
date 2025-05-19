@@ -1,40 +1,4 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Задание 8 — Практика</title>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../../assets/style.css">
-</head>
-<body>
-  <h1>Задание 8 — Практика</h1>
-  <nav>
-    <a href="../../index.html">На главную</a> |
-    <a href="teoria.html">Теория</a>
-  </nav>
-  <section>
-    <h2>Практическое задание</h2>
-    <p>Цветной прибор фотографирует изображения размером <em>1024×768</em> пикселей с палитрой из 4096 цветов и формирует пакеты по 256 снимков. Определите размер одного пакета фотографий в мегабайтах (целое число).</p>
-    <h2>Решение на Python</h2>
-    <pre><code># Параметры
-width, height = 1024, 768
-colors = 4096
-photos_per_packet = 256
 
-# 4096 цветов => 12 бит на пиксель
-bits_per_pixel = colors.bit_length() - 1  # или int(math.log2(colors))
-# вычисляем размер одного фото в байтах
-bytes_per_photo = width * height * bits_per_pixel // 8
-# размер пакета
-total_bytes = bytes_per_photo * photos_per_packet
-# перевод в мегабайты (1 МБ = 2^20 байт)
-megabytes = total_bytes // (2**20)
-print(megabytes)  # целое число мегабайт
-</code></pre>
-  </section>
-</body>
-</html>
 <!DOCTYPE html>
 <html lang="ru">
 <head>
