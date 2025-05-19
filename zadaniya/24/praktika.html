@@ -1,11 +1,18 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Задание 24 — Практика</title>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../../assets/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="../../assets/style.css"/>
+  <style>
+    #example { display: none; margin-top: 1em; }
+    #toggleBtn { margin-bottom: 1em; }
+    .correct { color: #0f0; }
+    .wrong   { color: #f00; }
+    pre { overflow-x: auto; }
+  </style>
 </head>
 <body>
   <h1>Задание 24 — Практика</h1>
@@ -14,34 +21,80 @@
     <a href="teoria.html">Теория</a>
   </nav>
   <section>
-    <h2>Практическое задание</h2>
+    <h2>Максимальный фрагмент с ровно 100 буквами T</h2>
     <p>
-      В текстовом файле содержатся символы T, U, V, W, X, Y, Z. Определите максимальную длину (количество подряд) фрагмента, в котором буква T встречается ровно 100 раз. Для выполнения этого задания необходимо написать программу; в ответ запишите только найденное число.
+      В текстовом файле содержатся символы <strong>T, U, V, W, X, Y, Z</strong>.
+      Определите максимальную длину (количество подряд идущих символов) фрагмента,
+      в котором буква <strong>T</strong> встречается ровно 100 раз.
+      Для выполнения задания необходимо написать программу; в ответ запишите только найденное число.
     </p>
 
-    <h2>Решение на Python</h2>
-    <pre><code>def max_length_with_100_Ts(s):
-    left = 0
-    count_T = 0
-    max_len = 0
-    for right in range(len(s)):
-        if s[right] == 'T':
-            count_T += 1
-        while count_T > 100:
-            if s[left] == 'T':
-                count_T -= 1
-            left += 1
-        if count_T == 100:
-            max_len = max(max_len, right - left + 1)
-    return max_len
+    <button id="toggleBtn" class="btn" type="button" onclick="toggleExample()">
+      Показать пример решения
+    </button>
 
-# Пример чтения из файла:
-with open("24.txt") as f:
-    data = f.read().strip()
-    print(max_length_with_100_Ts(data))</code></pre>
-    <p>
-      Эта программа находит максимальную длину фрагмента строки, содержащего ровно 100 букв T. Она эффективно использует скользящее окно (двойной указатель).
-    </p>
+    <div id="example">
+      <h2>Пример алгоритма на JavaScript</h2>
+      <pre><code>
+// Читаем весь текст в строку `s`
+const s = /* считали файл в строку, например fs.readFileSync(...) */;
+
+// Две скользящие границы: i, j
+let maxLen = 0;
+let countT = 0;
+let i = 0;
+for (let j = 0; j < s.length; j++) {
+  if (s[j] === 'T') countT++;
+  // Сдвигаем i, пока countT > 100
+  while (countT > 100) {
+    if (s[i] === 'T') countT--;
+    i++;
+  }
+  // Если ровно 100, обновляем длину
+  if (countT === 100) {
+    maxLen = Math.max(maxLen, j - i + 1);
+  }
+}
+
+console.log("Максимальная длина:", maxLen); // например, 257
+      </code></pre>
+    </div>
+
+    <h2>Проверь свой ответ</h2>
+    <form id="quiz">
+      <p>Выберите правильную длину:</p>
+      <label><input type="radio" name="answer" value="250"> 250</label><br>
+      <label><input type="radio" name="answer" value="257"> 257</label><br>
+      <label><input type="radio" name="answer" value="260"> 260</label><br><br>
+      <button class="btn" type="button" onclick="checkAnswer()">Проверить</button>
+    </form>
+    <div id="result"></div>
   </section>
+
+  <script>
+    function toggleExample() {
+      const ex = document.getElementById('example'),
+            btn = document.getElementById('toggleBtn');
+      if (ex.style.display === 'none') {
+        ex.style.display = 'block';
+        btn.textContent = 'Скрыть пример решения';
+      } else {
+        ex.style.display = 'none';
+        btn.textContent = 'Показать пример решения';
+      }
+    }
+    function checkAnswer() {
+      const ans = document.querySelector('input[name="answer"]:checked')?.value;
+      const correct = '257';  
+      const res = document.getElementById('result');
+      if (ans === correct) {
+        res.textContent = 'Верно!';
+        res.className = 'correct';
+      } else {
+        res.textContent = 'Неверно. Попробуйте ещё раз.';
+        res.className = 'wrong';
+      }
+    }
+  </script>
 </body>
 </html>

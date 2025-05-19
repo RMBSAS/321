@@ -1,11 +1,17 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Задание 11 — Практика</title>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../../assets/style.css">
+  <link rel="stylesheet" href="../../assets/style.css" />
+  <style>
+    #example { display: none; margin-top: 1em; }
+    #toggleBtn { margin-bottom: 1em; }
+    .correct { color: #0f0; }
+    .wrong   { color: #f00; }
+  </style>
 </head>
 <body>
   <h1>Задание 11 — Практика</h1>
@@ -13,29 +19,79 @@
     <a href="../../index.html">На главную</a> |
     <a href="teoria.html">Теория</a>
   </nav>
+
   <section>
-    <h2>Практическое задание</h2>
-    <p>В компьютерной системе каждому объекту присваивается идентификатор из 60 символов (только цифры и специальные символы алфавита). Для хранения каждого идентификатора используется одинаковое целое число байт, при этом применяется посимвольное кодирование (для каждого символа 11 бит). Определите объём памяти (в Кбайтах) для хранения 65 536 таких идентификаторов.</p>
-    <h2>Решение на Python</h2>
-    <pre><code>import math
+    <h2>Объём памяти для идентификаторов</h2>
+    <p>
+      В системе каждому объекту присваивается идентификатор длиной 60 символов (цифры + спецсимволы, всего 250 вариантов).
+      Кодирование каждого символа – 11 бит. Для хранения каждого идентификатора выделяется целое число байт (одинаково для всех).
+      Определите объём памяти в <strong>Кбайтах</strong>, необходимый для хранения 65 536 таких идентификаторов.
+    </p>
 
-# Параметры
-symbols = 60            # количество символов в идентификаторе
-bits_per_symbol = 11    # бит на символ
-count_ids = 65536       # число идентификаторов
+    <button id="toggleBtn" class="btn" type="button" onclick="toggleExample()">
+      Показать пример решения
+    </button>
 
-# Вычисляем биты и байты на один идентификатор
-total_bits = symbols * bits_per_symbol
-bytes_per_id = math.ceil(total_bits / 8)
+    <div id="example">
+      <h2>Пример алгоритма на JavaScript</h2>
+      <pre><code>
+// 1) Сколько бит нужно на один идентификатор:
+const bitsPerSymbol = 11;
+const length = 60;
+const bitsPerId = bitsPerSymbol * length; // 660 бит
 
-# Общий объём в байтах
-total_bytes = bytes_per_id * count_ids
+// 2) Переводим в целые байты:
+const bytesPerId = Math.ceil(bitsPerId / 8); // 83 байта
 
-# Перевод в Кбайты (1 KB = 1024 байта)
-total_kb = total_bytes // 1024
+// 3) Всего идентификаторов:
+const countIds = 65536;
 
-print(total_kb)  # Объём памяти в Кбайтах
-</code></pre>
+// 4) Общий объём в байтах:
+const totalBytes = bytesPerId * countIds;
+
+// 5) Переводим в килобайты (1 Кбайт = 1024 байт) и округляем вверх:
+const totalKB = Math.ceil(totalBytes / 1024);
+
+console.log("Объём (Кбайт):", totalKB); // 5314
+      </code></pre>
+    </div>
+
+    <h2>Проверь свой ответ</h2>
+    <form id="quiz">
+      <p>Выберите правильный объём в Кбайтах:</p>
+      <label><input type="radio" name="answer" value="5312"> 5312</label><br>
+      <label><input type="radio" name="answer" value="5314"> 5314</label><br>
+      <label><input type="radio" name="answer" value="5400"> 5400</label><br><br>
+      <button class="btn" type="button" onclick="checkAnswer()">Проверить</button>
+    </form>
+    <div id="result"></div>
   </section>
+
+  <script>
+    function toggleExample() {
+      const ex = document.getElementById('example'),
+            btn = document.getElementById('toggleBtn');
+      if (ex.style.display === 'none') {
+        ex.style.display = 'block';
+        btn.textContent = 'Скрыть пример решения';
+      } else {
+        ex.style.display = 'none';
+        btn.textContent = 'Показать пример решения';
+      }
+    }
+
+    function checkAnswer() {
+      const ans = document.querySelector('input[name="answer"]:checked')?.value;
+      const correct = '5314';
+      const res = document.getElementById('result');
+      if (ans === correct) {
+        res.textContent = 'Верно!';
+        res.className = 'correct';
+      } else {
+        res.textContent = 'Неверно. Попробуйте ещё раз.';
+        res.className = 'wrong';
+      }
+    }
+  </script>
 </body>
 </html>

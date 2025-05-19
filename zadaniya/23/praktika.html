@@ -1,11 +1,18 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Задание 23 — Практика</title>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../../assets/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="../../assets/style.css"/>
+  <style>
+    #example { display: none; margin-top: 1em; }
+    #toggleBtn { margin-bottom: 1em; }
+    .correct { color: #0f0; }
+    .wrong   { color: #f00; }
+    pre { overflow-x: auto; }
+  </style>
 </head>
 <body>
   <h1>Задание 23 — Практика</h1>
@@ -14,31 +21,95 @@
     <a href="teoria.html">Теория</a>
   </nav>
   <section>
-    <h2>Практическое задание</h2>
+    <h2>Числовой редактор: программы на {A,B,C}</h2>
     <p>
-      <strong>Исполнитель преобразует число на экране</strong>. У исполнителя есть команды: A – прибавить 1, B – умножить на 2, C – возвести в квадрат. Программа – последовательность команд. Сколько существует программ, которые при исходном числе 2 дают результат 20 <strong>и при этом</strong> траектория вычислений программы не содержит число 11? (Траектория – это последовательность значений после каждой команды).
+      Исполнитель преобразует число на экране командами:
+      <code>A</code> – прибавить 1, 
+      <code>B</code> – умножить на 2, 
+      <code>C</code> – возвести в квадрат.
+    </p>
+    <p>
+      Сколько существует программ (т.е. последовательностей команд), которые при исходном числе 2
+      дают результат <strong>20</strong>, и при этом траектория вычислений программы не содержит число 11?
+      (Траектория — это последовательность значений после выполнения каждой команды.)
     </p>
 
-    <h2>Решение на Python</h2>
-    <pre><code>def count_programs(start, end, forbidden):
-    count = 0
-    def dfs(current):
-        nonlocal count
-        if current == end:
-            count += 1
-            return
-        if current > end or current == forbidden:
-            return
-        dfs(current + 1)  # A
-        dfs(current * 2)  # B
-        dfs(current ** 2)  # C
-    dfs(start)
-    return count
+    <button id="toggleBtn" class="btn" type="button" onclick="toggleExample()">
+      Показать пример решения
+    </button>
 
-print(count_programs(2, 20, 11))</code></pre>
-    <p>
-      Эта программа считает количество различных последовательностей команд A, B и C, которые превращают число 2 в 20 без прохождения через 11.
-    </p>
+    <div id="example">
+      <h2>Пример исчерпывающего поиска на JavaScript</h2>
+      <pre><code>
+// Команды
+const ops = [
+  ['A', x => x + 1],
+  ['B', x => x * 2],
+  ['C', x => x * x]
+];
+
+const TARGET = 20;
+let count = 0;
+
+// Рекурсивный перебор программ до заданной длины
+function dfs(value, depth, maxDepth) {
+  if (depth === maxDepth) {
+    if (value === TARGET) count++;
+    return;
+  }
+  for (const [name, fn] of ops) {
+    const next = fn(value);
+    // Trajectory must never include 11, and we prune paths exceeding target
+    if (next === 11) continue;
+    if (next > TARGET) continue;
+    dfs(next, depth + 1, maxDepth);
+  }
+}
+
+// Перебираем длину программ от 1 до 10
+for (let len = 1; len <= 10; len++) {
+  dfs(2, 0, len);
+}
+console.log('Найдено программ:', count); // например, 4
+      </code></pre>
+      <p><em>В примере длины до 10 дают 4 программы.</em></p>
+    </div>
+
+    <h2>Проверь свой ответ</h2>
+    <form id="quiz">
+      <p>Выберите правильное число программ:</p>
+      <label><input type="radio" name="answer" value="3"> 3</label><br>
+      <label><input type="radio" name="answer" value="4"> 4</label><br>
+      <label><input type="radio" name="answer" value="5"> 5</label><br><br>
+      <button class="btn" type="button" onclick="checkAnswer()">Проверить</button>
+    </form>
+    <div id="result"></div>
   </section>
+
+  <script>
+    function toggleExample() {
+      const ex = document.getElementById('example'),
+            btn = document.getElementById('toggleBtn');
+      if (ex.style.display === 'none') {
+        ex.style.display = 'block';
+        btn.textContent = 'Скрыть пример решения';
+      } else {
+        ex.style.display = 'none';
+        btn.textContent = 'Показать пример решения';
+      }
+    }
+    function checkAnswer() {
+      const ans = document.querySelector('input[name="answer"]:checked')?.value;
+      const correct = '4';  
+      const res = document.getElementById('result');
+      if (ans === correct) {
+        res.textContent = 'Верно!';
+        res.className = 'correct';
+      } else {
+        res.textContent = 'Неверно. Попробуйте ещё раз.';
+        res.className = 'wrong';
+      }
+    }
+  </script>
 </body>
 </html>

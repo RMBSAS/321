@@ -1,56 +1,113 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Задание 12 — Практика</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Задание — Практика (Редактор)</title>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../../assets/style.css">
+  <link rel="stylesheet" href="../../assets/style.css" />
+  <style>
+    #example { display: none; margin-top: 1em; }
+    #toggleBtn { margin-bottom: 1em; }
+    .correct { color: #0f0; }
+    .wrong   { color: #f00; }
+    pre { overflow-x: auto; }
+  </style>
 </head>
 <body>
-  <h1>Задание 12 — Практика</h1>
+  <h1>Задание — Практика (Редактор)</h1>
   <nav>
     <a href="../../index.html">На главную</a> |
     <a href="teoria.html">Теория</a>
   </nav>
+
   <section>
-    <h2>Практическое задание</h2>
-    <p><strong>Исполнитель «Редактор»</strong> преобразует строку цифр командами:</p>
-    <ul>
-      <li><code>заменить(v,w)</code> – заменить первое слева вхождение подстроки <em>v</em> на <em>w</em>;</li>
-      <li><code>нашлось(v)</code> – проверяет наличие подстроки <em>v</em> в строке.</li>
-    </ul>
-    <p>Дана программа:</p>
-    <pre><code>НАЧАЛО
+    <h2>Редактор: наибольшее n при сумме цифр = 64</h2>
+    <p>
+      Исполнитель «Редактор» преобразует строку цифр командой:
+      <code>заменить(v,w)</code> (первое вхождение v→w) и проверкой
+      <code>нашлось(v)</code>. Дана программа:
+    </p>
+    <pre><code>
+НАЧАЛО
 ПОКА нашлось(52) ИЛИ нашлось(2222) ИЛИ нашлось(1122)
   ЕСЛИ нашлось(52)    ТО заменить(52, 11)  КОНЕЦ ЕСЛИ
-  ЕСЛИ нашлось(2222) ТО заменить(2222, 5) КОНЕЦ ЕСЛИ
+  ЕСЛИ нашлось(2222) ТО заменить(2222, 5)  КОНЕЦ ЕСЛИ
   ЕСЛИ нашлось(1122) ТО заменить(1122, 25) КОНЕЦ ЕСЛИ
 КОНЕЦ ПОКА
-КОНЕЦ</code></pre>
-    <p>На вход поступает строка, начинающаяся с «5», а затем <em>n</em> цифр «2» (3 &lt; n &lt; 10000). Определите наибольшее <em>n</em>, при котором сумма цифр результирующей строки равна 64.</p>
-    <h2>Решение на Python</h2>
-    <pre><code>def transform(s):
-    while '52' in s or '2222' in s or '1122' in s:
-        if '52' in s:
-            s = s.replace('52', '11', 1)
-        if '2222' in s:
-            s = s.replace('2222', '5', 1)
-        if '1122' in s:
-            s = s.replace('1122', '25', 1)
-    return s
+КОНЕЦ
+    </code></pre>
+    <p>
+      На вход подаётся строка: «5» + <strong>n</strong> раз «2»,
+      где 3 < n < 10000. Определите наибольшее <strong>n</strong>,
+      при котором после выполнения программы сумма цифр строки равна 64.
+      (В ответ – только число.)
+    </p>
 
-# Поиск максимального n
-def sum_digits(s):
-    return sum(int(c) for c in s)
+    <button id="toggleBtn" class="btn" type="button" onclick="toggleExample()">
+      Показать пример решения
+    </button>
 
-max_n = 0
-for n in range(4, 10000):
-    inp = '5' + '2' * n
-    res = transform(inp)
-    if sum_digits(res) == 64:
-        max_n = n
-print(max_n)  # ответ задачи</code></pre>
+    <div id="example">
+      <h2>Пример алгоритма на JavaScript</h2>
+      <pre><code>
+// Функция обработки редактором
+function process(s) {
+  while (s.includes('52') || s.includes('2222') || s.includes('1122')) {
+    if (s.includes('52'))    s = s.replace('52',   '11');
+    if (s.includes('2222'))  s = s.replace('2222', '5');
+    if (s.includes('1122'))  s = s.replace('1122', '25');
+  }
+  return s;
+}
+
+// Ищем максимальное n: строка "5" + n*"2"
+let best = 3;
+for (let n = 4; n < 10000; n++) {
+  const input = '5' + '2'.repeat(n);
+  const out = process(input);
+  const sum = [...out].reduce((a,c) => a + (+c), 0);
+  if (sum === 64) best = n;
+}
+console.log('Максимальное n =', best); // 156
+      </code></pre>
+    </div>
+
+    <h2>Проверь свой ответ</h2>
+    <form id="quiz">
+      <p>Выберите правильный <strong>n</strong>:</p>
+      <label><input type="radio" name="answer" value="154"> 154</label><br>
+      <label><input type="radio" name="answer" value="156"> 156</label><br>
+      <label><input type="radio" name="answer" value="158"> 158</label><br><br>
+      <button class="btn" type="button" onclick="checkAnswer()">Проверить</button>
+    </form>
+    <div id="result"></div>
   </section>
+
+  <script>
+    function toggleExample() {
+      const ex = document.getElementById('example'),
+            btn = document.getElementById('toggleBtn');
+      if (ex.style.display === 'none') {
+        ex.style.display = 'block';
+        btn.textContent = 'Скрыть пример решения';
+      } else {
+        ex.style.display = 'none';
+        btn.textContent = 'Показать пример решения';
+      }
+    }
+    function checkAnswer() {
+      const ans = document.querySelector('input[name="answer"]:checked')?.value;
+      const correct = '156';
+      const res = document.getElementById('result');
+      if (ans === correct) {
+        res.textContent = 'Верно!';
+        res.className = 'correct';
+      } else {
+        res.textContent = 'Неверно. Попробуйте ещё раз.';
+        res.className = 'wrong';
+      }
+    }
+  </script>
 </body>
 </html>

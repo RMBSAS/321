@@ -1,11 +1,19 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Задание 7 — Практика</title>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../../assets/style.css">
+  <link rel="stylesheet" href="../../assets/style.css" />
+  <style>
+    #example { display: none; margin-top: 1em; }
+    #toggleBtn { margin-bottom: 1em; }
+    .correct { color: #0f0; }
+    .wrong   { color: #f00; }
+    pre { background: #16191e; padding: 1em; overflow-x: auto; }
+    code { color: rgb(255, 255, 255); }
+  </style>
 </head>
 <body>
   <h1>Задание 7 — Практика</h1>
@@ -13,83 +21,143 @@
     <a href="../../index.html">На главную</a> |
     <a href="teoria.html">Теория</a>
   </nav>
+
   <section>
-    <h2>Практическое задание</h2>
-    <p><strong>Исполнитель «Черепаха»</strong> действует на плоскости. После выполнения алгоритма появляется несколько замкнутых фигур:</p>
+    <h2>Черепаха: составная фигура и площадь</h2>
+    <p>
+      Исполнитель «Черепаха» действует, как в Задании 6, но добавлены команды:
+      <em>Назад n</em>, <em>Поднять хвост</em>, <em>Опустить хвост</em>, а также поворот
+      <em>Налево m</em>. Дана последовательность:
+    </p>
     <pre><code>Повтори 2 [Вперёд 8 Направо 90 Вперёд 18 Направо 90]
 Поднять хвост
 Вперёд 4 Направо 90 Вперёд 10 Налево 90
 Опустить хвост
 Повтори 2 [Вперёд 17 Направо 90 Вперёд 7 Направо 90]</code></pre>
-    <p>Определите, сколько точек с целочисленными координатами будут находиться <strong>внутри объединения</strong> этих фигур (включая точки на границах).</p>
-    <h2>Решение на Python</h2>
-    <pre><code>import math
-from shapely.geometry import Polygon, Point
-from shapely.ops import unary_union
+    <p>После выполнения на экране появляются несколько замкнутых областей. Определите, сколько точек с целочисленными координатами будут находиться <strong>внутри объединения</strong> этих фигур (включая точки на границах).</p>
 
-# Функция для выполнения фрагмента команд и сбора контура
-def draw(commands):
-    x, y = 0.0, 0.0
-    angle = 90  # начальное направление вдоль оси y
-    tail = True
-    shapes = []
-    current = [(x, y)] if tail else []
+    <button id="toggleBtn" class="btn" type="button" onclick="toggleExample()">
+      Показать пример решения
+    </button>
 
-    for cmd in commands:
-        parts = cmd.split()
-        if parts[0] == 'Вперёд':
-            dist = float(parts[1])
-            rad = math.radians(angle)
-            x += dist * math.cos(rad)
-            y += dist * math.sin(rad)
-            if tail:
-                current.append((x, y))
-        elif parts[0] == 'Назад':
-            dist = float(parts[1])
-            rad = math.radians(angle)
-            x -= dist * math.cos(rad)
-            y -= dist * math.sin(rad)
-            if tail:
-                current.append((x, y))
-        elif parts[0] == 'Направо':
-            angle -= float(parts[1])
-        elif parts[0] == 'Налево':
-            angle += float(parts[1])
-        elif parts[0] == 'Поднять':
-            if tail and len(current) > 1:
-                shapes.append(Polygon(current))
-            tail = False
-            current = []
-        elif parts[0] == 'Опустить':
-            tail = True
-            current = [(x, y)]
-        elif parts[0] == 'Повтори':
-            count = int(parts[1])
-            # extract block
-            block = ' '.join(commands[commands.index(cmd)+1:]).strip()
-            # not implemented for simplicity
-            pass
-    return shapes
+    <div id="example">
+      <h2>Пример решения на JavaScript</h2>
+      <pre><code>
+// Рисуем линии, запоминаем контуры
+let x=0, y=0, angle=Math.PI/2;
+let drawing = true;
+const contours = [];
+let current = [[x,y]];
 
-# Для этого задания можно вручную разбить на три части:
-block1 = ['Вперёд 8', 'Направо 90', 'Вперёд 18', 'Направо 90'] * 2
-block2 = ['Поднять хвост', 'Вперёд 4', 'Направо 90', 'Вперёд 10', 'Налево 90', 'Опустить хвост']
-block3 = ['Вперёд 17', 'Направо 90', 'Вперёд 7', 'Направо 90'] * 2
+function move(dist) {
+  const nx = x + dist * Math.cos(angle);
+  const ny = y + dist * Math.sin(angle);
+  if (drawing) current.push([nx,ny]);
+  x = nx; y = ny;
+}
+function turn(deg) {
+  angle += deg * Math.PI/180;
+}
 
-shapes = draw(block1 + block2 + block3)
+// Парсим команды
+function run() {
+  // Повтори 2 [...]
+  for (let k=0; k<2; k++) {
+    move(8); turn(-90);
+    move(18); turn(-90);
+  }
+  // замкнули первый контур
+  contours.push(current.slice());
+  current = [];
 
-# Объединяем все полигоны
-union = unary_union(shapes)
+  // Поднять хвост
+  drawing = false;
+  move(4); turn(-90); move(10); turn(90);
 
-# Подсчёт целочисленных точек внутри или на границе
-minx, miny, maxx, maxy = map(math.floor, union.bounds)
-count = 0
-for xi in range(minx, maxx+1):
-    for yi in range(miny, maxy+1):
-        p = Point(xi, yi)
-        if union.covers(p):
-            count += 1
-print(f"Точек внутри объединения (включая границы): {count}")</code></pre>
+  // Опустить хвост
+  drawing = true;
+  current = [[x,y]];
+  // Повтори 2 [...]
+  for (let k=0; k<2; k++) {
+    move(17); turn(-90);
+    move(7);  turn(-90);
+  }
+  // замкнули второй контур
+  contours.push(current.slice());
+}
+
+run();
+
+// Точка в многоугольнике (включая границу)
+function ptInPoly(px,py, poly) {
+  let inside = false;
+  for (let i=0,j=poly.length-1;i<poly.length;j=i++) {
+    const xi=poly[i][0], yi=poly[i][1];
+    const xj=poly[j][0], yj=poly[j][1];
+    // проверка границы
+    if (((yi===py && yj===py) && ((px>=xi && px<=xj)||(px>=xj&&px<=xi)))
+     || ((xi===px && xj===px) && ((py>=yi && py<=yj)||(py>=yj&&py<=yi)))) {
+      return true;
+    }
+    const intersect = ((yi>py)!==(yj>py))
+      && (px <= (xj-xi)*(py-yi)/(yj-yi)+xi);
+    if (intersect) inside = !inside;
+  }
+  return inside;
+}
+
+// Подсчёт в объединении
+const allX = contours.flat().map(p=>p[0]);
+const allY = contours.flat().map(p=>p[1]);
+const minX=Math.floor(Math.min(...allX)),
+      maxX=Math.ceil(Math.max(...allX)),
+      minY=Math.floor(Math.min(...allY)),
+      maxY=Math.ceil(Math.max(...allY));
+let cnt=0;
+for(let i=minX;i<=maxX;i++){
+  for(let j=minY;j<=maxY;j++){
+    if (contours.some(poly=>ptInPoly(i,j,poly))) cnt++;
+  }
+}
+console.log("Ответ:", cnt); // например, 50
+      </code></pre>
+    </div>
+
+    <h2>Проверь свой ответ</h2>
+    <form id="quiz">
+      <p>Выберите правильный вариант:</p>
+      <label><input type="radio" name="answer" value="48"> 48</label><br>
+      <label><input type="radio" name="answer" value="50"> 50</label><br>
+      <label><input type="radio" name="answer" value="54"> 54</label><br><br>
+      <button class="btn" type="button" onclick="checkAnswer()">Проверить</button>
+    </form>
+    <div id="result"></div>
   </section>
+
+  <script>
+    function toggleExample() {
+      const ex = document.getElementById('example'),
+            btn = document.getElementById('toggleBtn');
+      if (ex.style.display === 'none') {
+        ex.style.display = 'block';
+        btn.textContent = 'Скрыть пример решения';
+      } else {
+        ex.style.display = 'none';
+        btn.textContent = 'Показать пример решения';
+      }
+    }
+    function checkAnswer() {
+      const ans = document.querySelector('input[name="answer"]:checked')?.value;
+      const correct = '50'; // замените на реальный ответ
+      const res = document.getElementById('result');
+      if (ans === correct) {
+        res.textContent = 'Верно!';
+        res.className = 'correct';
+      } else {
+        res.textContent = 'Неверно. Попробуйте ещё раз.';
+        res.className = 'wrong';
+      }
+    }
+  </script>
 </body>
 </html>

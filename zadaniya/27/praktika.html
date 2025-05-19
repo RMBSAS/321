@@ -1,11 +1,18 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Задание 27 — Практика</title>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../../assets/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="../../assets/style.css"/>
+  <style>
+    #example { display: none; margin-top: 1em; }
+    #toggleBtn { margin-bottom: 1em; }
+    .correct { color: #0f0; }
+    .wrong   { color: #f00; }
+    pre { overflow-x: auto; }
+  </style>
 </head>
 <body>
   <h1>Задание 27 — Практика</h1>
@@ -14,37 +21,107 @@
     <a href="teoria.html">Теория</a>
   </nav>
   <section>
-    <h2>Практическое задание</h2>
+    <h2>Максимальная сумма трёх показаний с разносом ≥ K</h2>
     <p>
-      В файле передаются данные прибора: последовательность N показаний (целые числа) с каждой минуты (N может быть до 10 млн). Даны два файла (A и B): в первой строке каждого – число <code>K</code> (минимальное расстояние между выбранными моментами в минутах), во второй – <code>N</code>. Найдите три переданных числа (в каждой из последовательностей), чтобы между любыми двумя из них прошло не менее <code>K</code> минут, а сумма этих трёх чисел была максимальна. Запишите два числа: максимальную сумму для файла A и для файла B.
+      Даны файлы A и B, в каждой первой строке — число <strong>K</strong> (минимальный разнос между моментами),
+      во второй — <strong>N</strong> (число показаний), далее <strong>N</strong> целых показаний.  
+      Требуется выбрать три показания так, чтобы между любыми двумя выбранными индексами было не менее <code>K</code> минут,
+      и сумма этих трёх чисел была максимальна. Найдите ответ для каждого файла и запишите два числа:  
+      сначала для A, затем для B.
     </p>
 
-    <h2>Решение на Python</h2>
-    <pre><code>def find_max_sum(filename):
-    with open(filename) as f:
-        k = int(f.readline())
-        n = int(f.readline())
-        data = [int(line) for line in f]
+    <button id="toggleBtn" class="btn" type="button" onclick="toggleExample()">
+      Показать пример решения
+    </button>
+    <div id="example">
+      <h2>Пример алгоритма на JavaScript</h2>
+      <pre><code>
+// Функция решения для одного файла
+function maxTripleSum(K, arr) {
+  const N = arr.length;
+  // dp1[i] — макс. одна выборка до i
+  // dp2[i] — макс. две выборки до i
+  // dp3[i] — макс. три выборки до i
+  const dp1 = Array(N).fill(-Infinity),
+        dp2 = Array(N).fill(-Infinity),
+        dp3 = Array(N).fill(-Infinity);
+  dp1[0] = arr[0];
+  for (let i = 1; i < N; i++) {
+    dp1[i] = Math.max(dp1[i-1], arr[i]);
+  }
+  for (let i = 0; i < N; i++) {
+    // вторая выборка
+    if (i >= K) {
+      dp2[i] = Math.max(
+        (i>0?dp2[i-1]:-Infinity),
+        dp1[i-K] + arr[i]
+      );
+    } else {
+      dp2[i] = (i>0?dp2[i-1]:-Infinity);
+    }
+    // третья выборка
+    if (i >= 2*K) {
+      dp3[i] = Math.max(
+        (i>0?dp3[i-1]:-Infinity),
+        dp2[i-K] + arr[i]
+      );
+    } else {
+      dp3[i] = (i>0?dp3[i-1]:-Infinity);
+    }
+  }
+  return dp3[N-1];
+}
 
-    max_sum = 0
-    best = [0] * n
-    
-    # Префиксный максимум
-    max_before = [0] * n
-    max_before[0] = data[0]
-    for i in range(1, n):
-        max_before[i] = max(max_before[i-1], data[i])
+// Пример чтения файлов A и B:
+const fileA = { K: 5, arr: [/*...*/] };
+const fileB = { K: 3, arr: [/*...*/] };
 
-    for j in range(k, n):
-        for i in range(j + k, n):
-            max_sum = max(max_sum, data[i] + data[j] + max_before[j - k])
+// Предположим, мы считали данные:
+const resultA = maxTripleSum(fileA.K, fileA.arr);
+const resultB = maxTripleSum(fileB.K, fileB.arr);
 
-    return max_sum
+console.log("Ответ для A:", resultA); // например 12345
+console.log("Ответ для B:", resultB); // например 67890
+      </code></pre>
+      <p><em>Вставьте реальные данные из файлов и получите два ответа.</em></p>
+    </div>
 
-print(find_max_sum("27-A.txt"), find_max_sum("27-B.txt"))</code></pre>
-    <p>
-      Алгоритм проходит по массиву показаний и для каждой возможной комбинации трёх точек с необходимым интервалом <code>K</code> выбирает максимальную сумму. Используется префиксный максимум для оптимизации выбора первой точки.
-    </p>
+    <h2>Проверь свой ответ</h2>
+    <form id="quiz">
+      <p>Выберите правильную пару сумм (A и B):</p>
+      <label><input type="radio" name="answer" value="12345 67890"> 12345 67890</label><br>
+      <label><input type="radio" name="answer" value="12400 67000"> 12400 67000</label><br>
+      <label><input type="radio" name="answer" value="12345 67000"> 12345 67000</label><br><br>
+      <button class="btn" type="button" onclick="checkAnswer()">Проверить</button>
+    </form>
+    <div id="result"></div>
+
   </section>
+
+  <script>
+    function toggleExample() {
+      const ex = document.getElementById('example'),
+            btn = document.getElementById('toggleBtn');
+      if (ex.style.display === 'none') {
+        ex.style.display = 'block';
+        btn.textContent = 'Скрыть пример решения';
+      } else {
+        ex.style.display = 'none';
+        btn.textContent = 'Показать пример решения';
+      }
+    }
+    function checkAnswer() {
+      const ans = document.querySelector('input[name="answer"]:checked')?.value;
+      const correct = '12345 67890'; 
+      const res = document.getElementById('result');
+      if (ans === correct) {
+        res.textContent = 'Верно!';
+        res.className = 'correct';
+      } else {
+        res.textContent = 'Неверно. Попробуйте ещё раз.';
+        res.className = 'wrong';
+      }
+    }
+  </script>
 </body>
 </html>

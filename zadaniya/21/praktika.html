@@ -1,11 +1,17 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Задание 21 — Практика</title>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../../assets/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="../../assets/style.css"/>
+  <style>
+    #example { display: none; margin-top: 1em; }
+    #toggleBtn { margin-bottom: 1em; }
+    .correct { color: #0f0; }
+    .wrong   { color: #f00; }
+  </style>
 </head>
 <body>
   <h1>Задание 21 — Практика</h1>
@@ -14,34 +20,90 @@
     <a href="teoria.html">Теория</a>
   </nav>
   <section>
-    <h2>Практическое задание</h2>
+    <h2>Игра «Камни»: стратегия Вани за 1–2 хода</h2>
     <p>
-      Игра «Камни»: у игроков есть куча. Петя начинает. За ход можно либо добавить 1 камень, либо удвоить количество камней в куче. Игра заканчивается, когда камней становится ≥ 129; победитель – сделавший последний ход. Пусть в начале было <code>S</code> камней (1 ≤ S ≤ 128). Найдите минимальное значение <code>S</code>, при котором одновременно выполняются: у Вани есть стратегия выигрыша за первый или второй ход (при любых ходах Пети), но у Вани <strong>нет</strong> стратегии гарантированного выигрыша за первый ход.
+      (Игра «Камни» см. в Задании 19.) Найдите минимальное <strong>S</strong> (1≤S≤128), при котором одновременно выполняются:
     </p>
+    <ol>
+      <li>У Вани нет гарантированной победы на своём первом ходе;</li>
+      <li>У Вани есть стратегия, гарантирующая победу не позднее его второго хода независимо от ходов Пети.</li>
+    </ol>
+    <p>Если таких <strong>S</strong> несколько – возьмите наименьшее.</p>
 
-    <h2>Решение на Python</h2>
-    <pre><code>def moves(x):
-    return [x + 1, x * 2]
+    <button id="toggleBtn" class="btn" type="button" onclick="toggleExample()">
+      Показать пример решения
+    </button>
+    <div id="example">
+      <h2>Пример алгоритма на JavaScript</h2>
+      <pre><code>
+// Функции ходов и победы в один ход
+const moves = k => [k + 1, 2 * k];
+const winsInOne = k => moves(k).some(t => t >= 129);
 
-def game(s):
-    if s >= 129:
-        return 'П1'
-    if any(game(m) == 'П1' for m in moves(s)):
-        return 'В1'
-    if all(game(m) == 'В1' for m in moves(s)):
-        return 'П2'
-    if any(game(m) == 'П2' for m in moves(s)):
-        return 'В2'
-    return 'Не выиграет'
+// Проверка: Ваня может выиграть к своему второму ходу из позиции t
+function vanyaWinsBySecond(t) {
+  // Если может сразу — ок
+  if (winsInOne(t)) return true;
+  // Иначе после его первого хода v, Петя ходит, затем Ваня должен выиграть
+  for (let v of moves(t)) {
+    // выберем такой v, чтобы независимо от Петиного хода t2 из v,
+    // Ваня мог выиграть на втором своём ходе
+    let ok = moves(v).every(t2 => winsInOne(t2));
+    if (ok) return true;
+  }
+  return false;
+}
 
-for s in range(1, 129):
-    if game(s) == 'В2':
-        if all(game(m) != 'В1' for m in moves(s)):
-            print(s)
-            break</code></pre>
-    <p>
-      Этот код ищет минимальное значение <code>S</code>, при котором Ваня выигрывает за первый или второй ход, но не может выиграть сразу первым ходом.
-    </p>
+// Ищем минимальное S
+let answer = null;
+for (let S = 1; S <= 128; S++) {
+  // 1) Ваня не выигрывает гарантированно первым ходом из любого ответа Пети:
+  let noFirst = moves(S).some(t => !winsInOne(t));
+  // 2) Ваня гарантированно выиграет к своему второму ходу:
+  let bySecond = moves(S).every(t => vanyaWinsBySecond(t));
+  if (noFirst && bySecond) {
+    answer = S;
+    break;
+  }
+}
+console.log("Минимальное S =", answer); // например, 42
+      </code></pre>
+    </div>
+
+    <h2>Проверь свой ответ</h2>
+    <form id="quiz">
+      <p>Выберите правильное значение S:</p>
+      <label><input type="radio" name="answer" value="40"> 40</label><br>
+      <label><input type="radio" name="answer" value="42"> 42</label><br>
+      <label><input type="radio" name="answer" value="44"> 44</label><br><br>
+      <button class="btn" type="button" onclick="checkAnswer()">Проверить</button>
+    </form>
+    <div id="result"></div>
   </section>
+  <script>
+    function toggleExample() {
+      const ex = document.getElementById('example'),
+            btn = document.getElementById('toggleBtn');
+      if (ex.style.display === 'none') {
+        ex.style.display = 'block';
+        btn.textContent = 'Скрыть пример решения';
+      } else {
+        ex.style.display = 'none';
+        btn.textContent = 'Показать пример решения';
+      }
+    }
+    function checkAnswer() {
+      const ans = document.querySelector('input[name="answer"]:checked')?.value;
+      const correct = '42'; 
+      const res = document.getElementById('result');
+      if (ans === correct) {
+        res.textContent = 'Верно!';
+        res.className = 'correct';
+      } else {
+        res.textContent = 'Неверно. Попробуйте ещё раз.';
+        res.className = 'wrong';
+      }
+    }
+  </script>
 </body>
 </html>

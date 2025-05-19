@@ -2,45 +2,99 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Задание 17 — Практика</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Задание — Практика (Последовательность и делимость)</title>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../../assets/style.css" />
+  <style>
+    #example { display: none; margin-top: 1em; }
+    #toggleBtn { margin-bottom: 1em; }
+    .correct { color: #0f0; }
+    .wrong   { color: #f00; }
+    pre { overflow-x: auto; }
+  </style>
 </head>
 <body>
-  <h1>Задание 17 — Практика</h1>
+  <h1>Практика — Пары с делимостью на 3</h1>
   <nav>
     <a href="../../index.html">На главную</a> |
     <a href="teoria.html">Теория</a>
   </nav>
+
   <section>
-    <h2>Практическое задание</h2>
-    <p>В файле дана последовательность натуральных чис (каждое ≤ 100000). Определите два значения:</p>
+    <p>
+      В файле содержится последовательность целых чисел. Элементы могут принимать значения
+      от −10 000 до 10 000 включительно. Определите и запишите в ответе:
+    </p>
     <ol>
-      <li>количество троек подряд идущих элементов, в которых ровно два из трёх – трёхзначные числа, а сумма троек не превышает максимального числа последовательности, оканчивающегося на 13;</li>
-      <li>максимальную из сумм таких троек.</li>
+      <li>количество пар подряд идущих элементов, в которых хотя бы одно число делится на 3;</li>
+      <li>максимальную из сумм элементов таких пар.</li>
     </ol>
-    <p>Запишите два числа: количество и найденную максимальную сумму.</p>
-    <h2>Решение на Python</h2>
-    <pre><code># Читаем числа из файла
-data = [int(line) for line in open('data17.txt')]
+    <p>Например, для последовательности 6; 2; 9; –3; 6 ответ — <strong>4 11</strong>.</p>
 
-# Находим максимальное число, оканчивающееся на 13
-max_end13 = max(x for x in data if x % 100 == 13)
+    <button id="toggleBtn" class="btn" type="button" onclick="toggleExample()">
+      Показать пример решения
+    </button>
 
-count = 0
-max_sum = 0
-# Перебираем все тройки подряд
-for i in range(len(data) - 2):
-    triple = data[i:i+3]
-    # ровно два трёхзначных
-    three_digit = sum(100 <= x <= 999 for x in triple)
-    s = sum(triple)
-    if three_digit == 2 and s <= max_end13:
-        count += 1
-        max_sum = max(max_sum, s)
+    <div id="example">
+      <h2>Пример решения на JavaScript</h2>
+      <pre><code>
+// Читаем массив nums из файла
+// (для примера возьмём встроенный массив)
+const nums = [6, 2, 9, -3, 6];
 
-print(count, max_sum)  # Вывод: количество троек и максимальная сумма</code></pre>
+let count = 0;
+let maxSum = -Infinity;
+
+// Перебираем пары подряд идущих элементов
+for (let i = 0; i < nums.length - 1; i++) {
+  const a = nums[i], b = nums[i+1];
+  if (a % 3 === 0 || b % 3 === 0) {
+    count++;
+    const s = a + b;
+    if (s > maxSum) maxSum = s;
+  }
+}
+
+console.log(count, maxSum); // 4 11
+      </code></pre>
+    </div>
+
+    <h2>Проверь свой ответ</h2>
+    <form id="quiz">
+      <p>Выберите правильный вариант (два числа через пробел):</p>
+      <label><input type="radio" name="answer" value="4 11"> 4 11</label><br>
+      <label><input type="radio" name="answer" value="3 12"> 3 12</label><br>
+      <label><input type="radio" name="answer" value="5 9"> 5 9</label><br><br>
+      <button class="btn" type="button" onclick="checkAnswer()">Проверить</button>
+    </form>
+    <div id="result"></div>
   </section>
+
+  <script>
+    function toggleExample() {
+      const ex = document.getElementById('example'),
+            btn = document.getElementById('toggleBtn');
+      if (ex.style.display === 'none') {
+        ex.style.display = 'block';
+        btn.textContent = 'Скрыть пример решения';
+      } else {
+        ex.style.display = 'none';
+        btn.textContent = 'Показать пример решения';
+      }
+    }
+    function checkAnswer() {
+      const ans = document.querySelector('input[name="answer"]:checked')?.value;
+      const correct = '4 11';
+      const res = document.getElementById('result');
+      if (ans === correct) {
+        res.textContent = 'Верно!';
+        res.className = 'correct';
+      } else {
+        res.textContent = 'Неверно. Попробуйте ещё раз.';
+        res.className = 'wrong';
+      }
+    }
+  </script>
 </body>
 </html>

@@ -35,3 +35,98 @@ print(megabytes)  # целое число мегабайт
   </section>
 </body>
 </html>
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Задание 8 — Практика</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../assets/style.css" />
+  <style>
+    #example { display: none; margin-top: 1em; }
+    #toggleBtn { margin-bottom: 1em; }
+    .correct { color: #0f0; }
+    .wrong   { color: #f00; }
+  </style>
+</head>
+<body>
+  <h1>Задание 8 — Практика</h1>
+  <nav>
+    <a href="../../index.html">На главную</a> |
+    <a href="teoria.html">Теория</a>
+  </nav>
+
+  <section>
+    <h2>Размер пакета фотографий</h2>
+    <p>
+      Цветной прибор формирует снимки размером <strong>1024×768</strong> пикселей
+      с палитрой из <strong>4096</strong> цветов и упаковывает их пакетами по <strong>256</strong> снимков.
+      Определите размер одного пакета в мегабайтах (целое число).
+    </p>
+
+    <button id="toggleBtn" class="btn" type="button" onclick="toggleExample()">
+      Показать пример решения
+    </button>
+
+    <div id="example">
+      <h2>Пример алгоритма на JavaScript</h2>
+      <pre><code>
+// 1) Битность одного пикселя:
+const bitsPerPixel = Math.log2(4096); // 12 бит
+
+// 2) Размер одного снимка в байтах:
+const pixels = 1024 * 768;
+const bytesPerImage = pixels * bitsPerPixel / 8;
+
+// 3) Размер пакета из 256 снимков в байтах:
+const imagesInPacket = 256;
+const totalBytes = bytesPerImage * imagesInPacket;
+
+// 4) Перевод в мегабайты (1 МБ = 2^20 байт)
+const MB = 2**20;
+const totalMB = totalBytes / MB;
+
+console.log("Размер пакета (МБ):", Math.floor(totalMB)); // 288
+      </code></pre>
+    </div>
+
+    <h2>Проверь свой ответ</h2>
+    <form id="quiz">
+      <p>Выберите правильный размер (МБ):</p>
+      <label><input type="radio" name="answer" value="270"> 270</label><br>
+      <label><input type="radio" name="answer" value="288"> 288</label><br>
+      <label><input type="radio" name="answer" value="300"> 300</label><br><br>
+      <button class="btn" type="button" onclick="checkAnswer()">Проверить</button>
+    </form>
+    <div id="result"></div>
+  </section>
+
+  <script>
+    function toggleExample() {
+      const ex = document.getElementById('example'),
+            btn = document.getElementById('toggleBtn');
+      if (ex.style.display === 'none') {
+        ex.style.display = 'block';
+        btn.textContent = 'Скрыть пример решения';
+      } else {
+        ex.style.display = 'none';
+        btn.textContent = 'Показать пример решения';
+      }
+    }
+
+    function checkAnswer() {
+      const ans = document.querySelector('input[name="answer"]:checked')?.value;
+      const correct = '288';
+      const res = document.getElementById('result');
+      if (ans === correct) {
+        res.textContent = 'Верно!';
+        res.className = 'correct';
+      } else {
+        res.textContent = 'Неверно. Попробуйте ещё раз.';
+        res.className = 'wrong';
+      }
+    }
+  </script>
+</body>
+</html>

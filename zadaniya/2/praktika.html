@@ -6,6 +6,14 @@
   <title>Задание 2 — Практика</title>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../../assets/style.css">
+  <style>
+    #example { display: none; margin-top: 1em; }
+    #toggleBtn { margin-bottom: 1em; }
+    .correct { color: #0f0; }
+    .wrong   { color: #f00; }
+    table { border-collapse: collapse; margin-bottom: 1em; }
+    th, td { border: 1px solid #555; padding: 0.3em 0.6em; text-align: center; }
+  </style>
 </head>
 <body>
   <h1>Задание 2 — Практика</h1>
@@ -14,38 +22,103 @@
     <a href="teoria.html">Теория</a>
   </nav>
   <section>
-    <h2>Практическое задание</h2>
-    <p>Дана частично заполненная таблица истинности логической функции <code>F = (x &amp; ¬y) ∨ (y ≡ z) ∨ ¬w</code>. Миша заполнял её фрагмент, но не указал, какому столбцу соответствует каждая из переменных <strong>w, x, y, z</strong>. Определите порядок переменных <strong>w, x, y, z</strong> по столбцам таблицы (сначала буква, соответствующая первому столбцу, и т.д.).</p>
-    <h2>Решение на Python</h2>
-    <pre><code>import itertools
+    <h2>Таблица истинности функции</h2>
+    <p>
+      Дана частично заполненная таблица истинности логической функции
+      <code>F = (x ∧ ¬y) ∧ (y == z) ∧ ¬w</code>.
+      Миша заполнял фрагмент таблицы, но не указал, какому столбцу соответствует каждая из переменных <strong>w, x, y, z</strong>.
+      Определите порядок переменных <strong>w, x, y, z</strong> по столбцам таблицы
+      (сначала буква, соответствующая первому столбцу, и т.д.).
+    </p>
 
-# Фрагмент таблицы истинности: список строк вида ([col1, col2, col3, col4], F)
-# Замените примерный фрагмент на реальный из условия
-fragment = [
-    ([0, 0, 0, 0], 1),
-    ([0, 0, 0, 1], 1),
-    ([1, 0, 1, 0], 1),
-    # ... добавьте остальные строки фрагмента
-]
+    <table id="truthTable">
+      <tr>
+        <th>—</th><th>—</th><th>—</th><th>—</th><th>F</th>
+      </tr>
+      
+      <tr><td>0</td><td>1</td><td>0</td><td>0</td><td>1</td></tr>
+      <tr><td>1</td><td>0</td><td>0</td><td>0</td><td>1</td></tr>
+      <tr><td>1</td><td>0</td><td>1</td><td>0</td><td>1</td></tr>
+    </table>
 
-variables = ['w', 'x', 'y', 'z']
+       <button id="toggleBtn" class="btn" type="button" onclick="toggleExample()">
+      Показать пример решения
+    </button>
 
-# Проверка всех перестановок
-for perm in itertools.permutations(variables):
-    valid = True
-    for cols, f_val in fragment:
-        # создаём словарь переменных для текущей строки
-        assign = dict(zip(perm, cols))
-        w, x, y, z = assign['w'], assign['x'], assign['y'], assign['z']
-        # вычисляем функцию F
-        F = (x and not y) or (y == z) or (not w)
-        if int(F) != f_val:
-            valid = False
-            break
-    if valid:
-        print('Порядок столбцов:', ''.join(perm))  # например, 'xwyz'
-        break</code></pre>
-    <p>Заполните <code>fragment</code> реальными данными из таблицы, запустите скрипт, и он выведет нужный порядок переменных по столбцам.</p>
+    <div id="example">
+      <h2>Пример алгоритма на JavaScript</h2>
+      <pre><code>
+// Всю таблицу Misha записал в массив rows:
+// каждая строка — [c0,c1,c2,c3, F_val]
+const rows = [
+  // [?, ?, ?, ?, ?],
+  // ... заполните здесь ваши данные
+];
+
+// Все возможные перестановки колонок [w,x,y,z]
+const perms = [
+  ['w','x','y','z'], ['w','x','z','y'], ['w','y','x','z'], /* ... все 24 ... */ 
+];
+
+function evaluateF(vals) {
+  const [w,x,y,z] = vals;
+  return (x && !y) || (y === z) || (!w);
+}
+
+function findOrder() {
+  for (let perm of perms) {
+    let ok = rows.every(r => {
+      // сопоставим r[0]→perm[0], … r[3]→perm[3]
+      const mapping = { w: r[0], x: r[1], y: r[2], z: r[3] };
+      const vals = [mapping.w, mapping.x, mapping.y, mapping.z];
+      return evaluateF(vals) === Boolean(r[4]);
+    });
+    if (ok) return perm.join('');
+  }
+  return null;
+}
+
+console.log('Порядок столбцов:', findOrder());
+// В консоли увидите строку вида "wxyz" — это ответ
+      </code></pre>
+    </div>
+
+    <h2>Проверь свой ответ</h2>
+    <form id="quiz">
+      <p>Выберите один из трёх вариантов (четырёхбуквенная строка):</p>
+      <label><input type="radio" name="answer" value="wxyz"> wxyz</label><br>
+      <label><input type="radio" name="answer" value="xwyz"> xwyz</label><br>
+      <label><input type="radio" name="answer" value="yxzw"> yxzw</label><br><br>
+      <button class="btn" type="button" onclick="checkAnswer()">Проверить</button>
+    </form>
+    <div id="result"></div>
   </section>
+
+  <script>
+    function toggleExample() {
+      const ex = document.getElementById('example'),
+            btn = document.getElementById('toggleBtn');
+      if (ex.style.display === 'none') {
+        ex.style.display = 'block';
+        btn.textContent = 'Скрыть пример решения';
+      } else {
+        ex.style.display = 'none';
+        btn.textContent = 'Показать пример решения';
+      }
+    }
+
+    function checkAnswer() {
+      const ans = document.querySelector('input[name="answer"]:checked')?.value;
+      const correct = 'yxzw'; // подставьте здесь реальный правильный порядок
+      const res = document.getElementById('result');
+      if (ans === correct) {
+        res.textContent = 'Верно!';
+        res.className = 'correct';
+      } else {
+        res.textContent = 'Неверно. Попробуйте ещё раз.';
+        res.className = 'wrong';
+      }
+    }
+  </script>
 </body>
 </html>

@@ -1,11 +1,19 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Задание 5 — Практика</title>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../../assets/style.css">
+  <link rel="stylesheet" href="../../assets/style.css" />
+  <style>
+    #example { display: none; margin-top: 1em; }
+    #toggleBtn { margin-bottom: 1em; }
+    table { border-collapse: collapse; margin-bottom: 1em; }
+    th, td { border: 1px solid #555; padding: 0.3em 0.6em; text-align: center; }
+    .correct { color: #0f0; }
+    .wrong   { color: #f00; }
+  </style>
 </head>
 <body>
   <h1>Задание 5 — Практика</h1>
@@ -13,36 +21,87 @@
     <a href="../../index.html">На главную</a> |
     <a href="teoria.html">Теория</a>
   </nav>
+
   <section>
-    <h2>Практическое задание</h2>
-    <p>На вход алгоритма подаётся натуральное число <em>N</em>. Алгоритм строит новое число <em>R</em> так:</p>
+    <h2>Построение числа R по двоичной записи</h2>
+    <p>
+      На вход алгоритма подаётся натуральное число <strong>N</strong>. Алгоритм строит новое число <strong>R</strong> так:
+    </p>
     <ol>
-      <li>Строится двоичная запись <em>N</em>;</li>
-      <li>Если <em>N</em> делится на 3, то к двоичной записи слева приписывается «1», а справа – три последних цифры «111»;</li>
-      <li>Если <em>N</em> не делится на 3, то остаток от деления на 3 умножается на 3, переводится в двоичную систему и дописывается в конец.</li>
+      <li>Строится двоичная запись <em>N</em> (без ведущих нулей).</li>
+      <li>Если <em>N</em> делится на 3, то к двоичной записи слева приписывается «1», а справа – три единицы («111»).</li>
+      <li>Если <em>N</em> не делится на 3, то остаток от деления на 3 умножается на 3, переводится в двоичную и дописывается в конец.</li>
     </ol>
-    <p>Полученная строка – это двоичная запись числа <em>R</em>. Укажите минимальное число <em>R&gt;151</em>, которое может получиться в результате выполнения алгоритма.</p>
-    <h2>Решение на Python</h2>
-    <pre><code>def build_R(N):
-    b = bin(N)[2:]
-    if N % 3 == 0:
-        suffix = b[-3:]
-        new_bin = '1' + b + suffix
-    else:
-        rem = (N % 3) * 3
-        suffix = bin(rem)[2:]
-        new_bin = b + suffix
-    return int(new_bin, 2)
+    <p>Полученная строка считается двоичной записью числа <strong>R</strong>. Найдите минимальное <strong>R &gt; 151</strong> (ответ в десятичной системе).</p>
 
-# Ищем минимальное R > 151
-min_R = None
-for N in range(1, 1000):  # граница поиска достаточно велика
-    R = build_R(N)
-    if R > 151:
-        if min_R is None or R < min_R:
-            min_R = R
 
-print(f"Минимальное R > 151: {min_R}")</code></pre>
+    <button id="toggleBtn" class="btn" type="button" onclick="toggleExample()">
+      Показать пример решения
+    </button>
+
+    <div id="example">
+      <h2>Пример алгоритма на JavaScript</h2>
+      <pre><code>
+// Функция, которой подаём N, а она возвращает R
+function computeR(N) {
+  let bin = N.toString(2);         // двоичная строка N
+  if (N % 3 === 0) {
+    return parseInt('1' + bin + '111', 2);
+  } else {
+    const rem = (N % 3) * 3;       // остаток*3
+    const remBin = rem.toString(2);
+    return parseInt(bin + remBin, 2);
+  }
+}
+
+// Ищем минимальное R > 151
+let answer = Infinity;
+for (let N = 1; N < 1000; N++) {
+  const R = computeR(N);
+  if (R > 151 && R < answer) {
+    answer = R;
+  }
+}
+console.log('Минимальное R > 151 =', answer); // 166
+      </code></pre>
+    </div>
+
+    <h2>Проверь свой ответ</h2>
+    <form id="quiz">
+      <p>Выберите один из трёх вариантов:</p>
+      <label><input type="radio" name="answer" value="166"> 166</label><br>
+      <label><input type="radio" name="answer" value="231"> 231</label><br>
+      <label><input type="radio" name="answer" value="200"> 200</label><br><br>
+      <button class="btn" type="button" onclick="checkAnswer()">Проверить</button>
+    </form>
+    <div id="result"></div>
   </section>
+
+  <script>
+    function toggleExample() {
+      const ex = document.getElementById('example'),
+            btn = document.getElementById('toggleBtn');
+      if (ex.style.display === 'none') {
+        ex.style.display = 'block';
+        btn.textContent = 'Скрыть пример решения';
+      } else {
+        ex.style.display = 'none';
+        btn.textContent = 'Показать пример решения';
+      }
+    }
+
+    function checkAnswer() {
+      const ans = document.querySelector('input[name="answer"]:checked')?.value;
+      const correct = '166';
+      const res = document.getElementById('result');
+      if (ans === correct) {
+        res.textContent = 'Верно!';
+        res.className = 'correct';
+      } else {
+        res.textContent = 'Неверно. Попробуйте ещё раз.';
+        res.className = 'wrong';
+      }
+    }
+  </script>
 </body>
 </html>

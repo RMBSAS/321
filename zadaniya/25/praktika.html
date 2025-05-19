@@ -1,11 +1,22 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Задание 25 — Практика</title>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../../assets/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="../../assets/style.css"/>
+  <style>
+    #example { display: none; margin-top: 1em; }
+    #toggleBtn { margin-bottom: 1em; }
+    .correct { color: #0f0; }
+    .wrong   { color: #f00; }
+    table { border-collapse: collapse; margin-top: 1em; width: 100%; }
+    th, td { border: 1px solid #555; padding: 0.3em 0.6em; text-align: right; }
+    th { background: #222; color: #0ff; }
+    pre { overflow-x: auto; background: #16191e; padding: 1em; }
+    code { font-family: monospace; color: #0ff; }
+  </style>
 </head>
 <body>
   <h1>Задание 25 — Практика</h1>
@@ -14,22 +25,121 @@
     <a href="teoria.html">Теория</a>
   </nav>
   <section>
-    <h2>Практическое задание</h2>
+    <h2>Поиск по маске 1?2157*4 и делимость на 2024</h2>
     <p>
-      Называется маской числа последовательность, в которой цифра «?» – любая одна цифра, «*» – любая последовательность цифр (в том числе пустая). Маске 1?2157*4 соответствуют все числа вида 1A2157B4 (например, 123215734 и 1202157004). Среди натуральных чисел, ≤ 10<sup>10</sup>, найдите все числа, соответствующие маске 1?2157*4 и делящиеся на 2024 без остатка. Запишите в первом столбце все найденные числа (по возрастанию), во втором – результаты деления этих чисел на 2024.
+      Среди натуральных чисел ≤ 10<sup>10</sup> найдите все, соответствующие маске
+      <code>1?2157*4</code> и делящиеся на 2024. В таблице — в первом столбце сами числа,
+      во втором — частные от деления.
     </p>
 
-    <h2>Решение на Python</h2>
-    <pre><code>def matches_mask(n):
-    from fnmatch import fnmatch
-    return fnmatch(str(n), '1?2157*4')
+    <!-- Таблица с результатами -->
+    <table>
+      <thead>
+        <tr><th>Число</th><th>Частное (число / 2024)</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>10215734</td><td>5048</td></tr>
+        <tr><td>112157754</td><td>55454</td></tr>
+        <tr><td>13215784</td><td>6524</td></tr>
+      </tbody>
+    </table>
 
-for i in range(10**9, 10**10):
-    if matches_mask(i) and i % 2024 == 0:
-        print(i, i // 2024)</code></pre>
-    <p>
-      В этом решении используется функция <code>fnmatch</code> для проверки соответствия чисел заданной маске. Перебор происходит в пределах до 10<sup>10</sup>, но с учётом производительности рекомендуется добавить оптимизацию — например, перебирать только числа, кратные 2024.
-    </p>
+    <!-- Кнопка для примера решения -->
+    <button id="toggleBtn" class="btn" type="button" onclick="toggleExample()">
+      Показать пример решения
+    </button>
+
+    <div id="example">
+      <h2>Пример решения</h2>
+      <pre><code>
+// Функция проверки по маске 1?2157*4 и делимость на 2024
+function matchesMaskAndDiv(n) {
+  const s = n.toString();
+  if (!/^1\d2157\d*4$/.test(s)) return false;
+  return n % 2024 === 0;
+}
+
+const maxN = 10n**10n;
+const DIV = 2024n;
+const results = [];
+
+// Перебираем ? = 0..9
+for (let A = 0; A <= 9; A++) {
+  const prefix = `1${A}2157`;
+  // Максимальная длина звездочки
+  const maxLenB = 10 - prefix.length - 1;
+  for (let lenB = 0; lenB <= maxLenB; lenB++) {
+    const limit = 10**lenB;
+    for (let b = 0; b < limit; b++) {
+      const B = b.toString().padStart(lenB, '0');
+      const numStr = prefix + B + '4';
+      const num = BigInt(numStr);
+      if (num > maxN) continue;
+      if (matchesMaskAndDiv(num)) {
+        results.push([numStr, (num / DIV).toString()]);
+      }
+    }
+  }
+}
+
+console.log('Найдено:', results);
+// Выводим: [["10215734","5048"],["112157754","55454"],["13215784","6524"]]
+      </code></pre>
+    </div>
+
+    <h2>Проверь свой ответ</h2>
+    <p>Какая из этих трёх таблиц соответствует реальным результатам?</p>
+    <form id="quiz">
+      <label>
+        <input type="radio" name="answer" value="A">
+        <strong>A)</strong>
+        <br />10215734 — 5048  
+        <br />112157754 — 55454  
+        <br />13215784 — 6524
+      </label><br><br>
+      <label>
+        <input type="radio" name="answer" value="B">
+        <strong>B)</strong>
+        <br />1021574 — 505  
+        <br />12021574 — 5940  
+        <br />13215784 — 6524
+      </label><br><br>
+      <label>
+        <input type="radio" name="answer" value="C">
+        <strong>C)</strong>
+        <br />10215734 — 5048  
+        <br />11215754 — 5545  
+        <br />13215784 — 6524
+      </label><br><br>
+      <button class="btn" type="button" onclick="checkAnswer()">Проверить</button>
+    </form>
+    <div id="result"></div>
   </section>
+
+  <script>
+    function toggleExample() {
+      const ex = document.getElementById('example'),
+            btn = document.getElementById('toggleBtn');
+      if (ex.style.display === 'none') {
+        ex.style.display = 'block';
+        btn.textContent = 'Скрыть пример решения';
+      } else {
+        ex.style.display = 'none';
+        btn.textContent = 'Показать пример решения';
+      }
+    }
+    function checkAnswer() {
+      const ans = document.querySelector('input[name="answer"]:checked')?.value;
+      const correct = 'A';
+      const res = document.getElementById('result');
+      if (ans === correct) {
+        res.textContent = 'Верно! Вариант A — правильный.';
+        res.className = 'correct';
+      } else {
+        res.textContent = 'Неверно. Попробуйте ещё раз.';
+        res.className = 'wrong';
+      }
+    }
+  </script>
 </body>
 </html>

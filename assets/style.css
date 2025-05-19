@@ -115,7 +115,34 @@ section {
   width: 100%;
   max-width: 800px;
 }
+.btn {
+  display: inline-block;
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: #00ffff;              
+  background: transparent;
+  border: 2px solid #00ffff;     
+  border-radius: 4px;
+  padding: 0.4em 0.8em;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  transition: background 0.2s, color 0.2s;
+}
 
+.btn:hover {
+  background: rgba(0, 255, 255, 0.1);
+}
+
+.btn:active {
+  background: rgba(0, 255, 255, 0.2);
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
 ol {
   padding-left: 1.5rem;
 }

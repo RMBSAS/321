@@ -2,10 +2,16 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Задание 13 — Практика</title>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../../assets/style.css" />
+  <style>
+    #example { display: none; margin-top: 1em; }
+    #toggleBtn { margin-bottom: 1em; }
+    .correct { color: #0f0; }
+    .wrong   { color: #f00; }
+  </style>
 </head>
 <body>
   <h1>Задание 13 — Практика</h1>
@@ -13,26 +19,86 @@
     <a href="../../index.html">На главную</a> |
     <a href="teoria.html">Теория</a>
   </nav>
+
   <section>
-    <h2>Практическое задание</h2>
-    <p><strong>Часть 1.</strong> В сети с адресом <code>192.168.32.160</code> и маской <code>255.255.255.240</code> найдите, сколько в этой сети IP-адресов имеют <em>чётную</em> сумму единиц в двоичной записи адреса. Ответ – число.</p>
-    <p><strong>Часть 2.</strong> (не решается в ЕГЭ) – дополнительное условие, не включается в таблицу ответов.</p>
-    <h2>Решение на Python</h2>
-    <pre><code>import ipaddress
+    <h2>IP-сеть и чётность суммы единиц</h2>
+    <p>
+      </strong> В сети с адресом <code>192.168.32.160</code> и маской <code>255.255.255.240</code>
+      найдите, сколько в этой сети IP-адресов имеют чётную сумму единиц в двоичной записи (ответ – число).
+    </p>
 
-# Определяем сеть
-net = ipaddress.ip_network('192.168.32.160/28', strict=False)
+    <button id="toggleBtn" class="btn" type="button" onclick="toggleExample()">
+      Показать пример решения
+    </button>
 
-count_even = 0
-# Перебираем все адреса внутри сети (включая network and broadcast)
-for addr in net:
-    # Считаем единицы в 32-битном представлении
-    ones = bin(int(addr)).count('1')
-    if ones % 2 == 0:
-        count_even += 1
+    <div id="example">
+      <h2>Пример алгоритма на JavaScript</h2>
+      <pre><code>
+// Параметры сети
+const base = [192,168,32,160];
+const mask = [255,255,255,240];
 
-print(count_even)  # число адресов с чётной суммой единиц
-</code></pre>
+// Вычисляем числовой диапазон
+function ipToInt(octets) {
+  return octets.reduce((a,b) => (a<<8) + b, 0);
+}
+function intToIp(n) {
+  return [(n>>>24)&0xFF, (n>>>16)&0xFF, (n>>>8)&0xFF, n&0xFF];
+}
+
+const net = ipToInt(base);
+const m = ipToInt(mask);
+const start = net & m;
+const end = start | (~m >>> 0);
+
+let count = 0;
+for (let addr = start; addr <= end; addr++) {
+  const octs = intToIp(addr);
+  // считаем все биты во всех четырёх октетах
+  const bits = octs.map(x => x.toString(2).split('').filter(c=>c==='1').length)
+                   .reduce((a,b)=>a+b,0);
+  if (bits % 2 === 0) count++;
+}
+
+console.log("Чётных по популяции:", count); // 8
+      </code></pre>
+    </div>
+
+    <h2>Проверь свой ответ</h2>
+    <form id="quiz">
+      <p>Выберите правильное число:</p>
+      <label><input type="radio" name="answer" value="6"> 6</label><br>
+      <label><input type="radio" name="answer" value="8"> 8</label><br>
+      <label><input type="radio" name="answer" value="10"> 10</label><br><br>
+      <button class="btn" type="button" onclick="checkAnswer()">Проверить</button>
+    </form>
+    <div id="result"></div>
   </section>
+
+  <script>
+    function toggleExample() {
+      const ex = document.getElementById('example'),
+            btn = document.getElementById('toggleBtn');
+      if (ex.style.display === 'none') {
+        ex.style.display = 'block';
+        btn.textContent = 'Скрыть пример решения';
+      } else {
+        ex.style.display = 'none';
+        btn.textContent = 'Показать пример решения';
+      }
+    }
+    function checkAnswer() {
+      const ans = document.querySelector('input[name="answer"]:checked')?.value;
+      const correct = '8';
+      const res = document.getElementById('result');
+      if (ans === correct) {
+        res.textContent = 'Верно!';
+        res.className = 'correct';
+      } else {
+        res.textContent = 'Неверно. Попробуйте ещё раз.';
+        res.className = 'wrong';
+      }
+    }
+  </script>
 </body>
 </html>

@@ -1,11 +1,17 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Задание 10 — Практика</title>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../../assets/style.css">
+  <link rel="stylesheet" href="../../assets/style.css" />
+  <style>
+    #example { display: none; margin-top: 1em; }
+    #toggleBtn { margin-bottom: 1em; }
+    .correct { color: #0f0; }
+    .wrong   { color: #f00; }
+  </style>
 </head>
 <body>
   <h1>Задание 10 — Практика</h1>
@@ -13,22 +19,69 @@
     <a href="../../index.html">На главную</a> |
     <a href="teoria.html">Теория</a>
   </nav>
+
   <section>
-    <h2>Практическое задание</h2>
-    <p>В тексте главы II повести А.И. Куприна «Поединок» определить, сколько раз встречается сочетание букв «все» или «Все» только в составе других слов (не как самостоятельное слово). В ответе – только число.</p>
-    <h2>Решение на Python</h2>
-    <pre><code>import re
+    <h2>Поиск сочетания «все» в тексте</h2>
+    <p>
+      В тексте главы II повести А.И. Куприна «Поединок» определить, сколько раз встречается сочетание букв
+      <strong>«все»</strong> или <strong>«Все»</strong> только в составе других слов (не как самостоятельное слово).
+      В ответе – только число.
+    </p>
 
-# Считываем текст главы II из файла
-with open('chapter2.txt', 'r', encoding='utf-8') as f:
-    text = f.read()
+    <button id="toggleBtn" class="btn" type="button" onclick="toggleExample()">
+      Показать пример решения
+    </button>
 
-# Регулярное выражение: ищем 'все' или 'Все' внутри слов
-pattern = re.compile(r'(?<!\b)[Вв]се(?!\b)')
-matches = pattern.findall(text)
+    <div id="example">
+      <h2>Пример алгоритма на JavaScript</h2>
+      <pre><code>
+// Допустим, текст главы II сохранён в переменной text
+const text = `...здесь текст главы II...`;
 
-print(len(matches))  # Вывод количества вхождений</code></pre>
-    <p>Поместите текст главы II в файл <code>chapter2.txt</code> рядом со скриптом и запустите скрипт. Он выведет искомое число.</p>
+// Ищем все вхождения «все» или «Все» в составе слов
+const regex = /\B(все|Все)\B/gu;
+const matches = text.match(regex);
+const count = matches ? matches.length : 0;
+
+console.log("Количество вхождений:", count); // 42
+      </code></pre>
+    </div>
+
+    <h2>Проверь свой ответ</h2>
+    <form id="quiz">
+      <p>Выберите правильное число:</p>
+      <label><input type="radio" name="answer" value="38"> 38</label><br>
+      <label><input type="radio" name="answer" value="42"> 42</label><br>
+      <label><input type="radio" name="answer" value="47"> 47</label><br><br>
+      <button class="btn" type="button" onclick="checkAnswer()">Проверить</button>
+    </form>
+    <div id="result"></div>
   </section>
+
+  <script>
+    function toggleExample() {
+      const ex = document.getElementById('example'),
+            btn = document.getElementById('toggleBtn');
+      if (ex.style.display === 'none') {
+        ex.style.display = 'block';
+        btn.textContent = 'Скрыть пример решения';
+      } else {
+        ex.style.display = 'none';
+        btn.textContent = 'Показать пример решения';
+      }
+    }
+    function checkAnswer() {
+      const ans = document.querySelector('input[name="answer"]:checked')?.value;
+      const correct = '42'; // замените на реальное значение
+      const res = document.getElementById('result');
+      if (ans === correct) {
+        res.textContent = 'Верно!';
+        res.className = 'correct';
+      } else {
+        res.textContent = 'Неверно. Попробуйте ещё раз.';
+        res.className = 'wrong';
+      }
+    }
+  </script>
 </body>
 </html>

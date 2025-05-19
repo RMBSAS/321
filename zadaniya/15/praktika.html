@@ -2,10 +2,16 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Задание 15 — Практика</title>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../../assets/style.css" />
+  <style>
+    #example { display: none; margin-top: 1em; }
+    #toggleBtn { margin-bottom: 1em; }
+    .correct { color: #0f0; }
+    .wrong   { color: #f00; }
+  </style>
 </head>
 <body>
   <h1>Задание 15 — Практика</h1>
@@ -13,27 +19,83 @@
     <a href="../../index.html">На главную</a> |
     <a href="teoria.html">Теория</a>
   </nav>
-  <section>
-    <h2>Практическое задание</h2>
-    <p>Найдите наименьшее целое неотрицательное число <strong>A</strong>, при котором выражение</p>
-    <p style="text-align:center;"><em>(x + 2y &lt; A) ∨ (y &gt; x) ∨ (x &gt; 60)</em></p>
-    <p>тождественно истинно для всех целых <em>x, y ≥ 0</em>.</p>
-    <h2>Решение на Python</h2>
-    <pre><code>def is_true_for_all(A):
-    for x in range(0, 61):  # при x>60 (x>60) истина, проверяем x<=60
-        for y in range(0, x+1):  # при y>x (y>x) истина, проверяем y<=x
-            if not ((x + 2*y < A) or (y > x) or (x > 60)):
-                return False
-    return True
 
-# Поиск минимального A
-a = 0
-while True:
-    if is_true_for_all(a):
-        print(a)
-        break
-    a += 1  # следующий кандидат
-</code></pre>
+  <section>
+    <h2>Поиск минимального A для тождества</h2>
+    <p>
+      Для какого наименьшего целого неотрицательного числа <strong>A</strong> выражение  
+      <code>(x + 2y &lt; A) || (y &gt; x) || (x &gt; 60)</code>  
+      тождественно истинно при всех целых <code>x, y ≥ 0</code>?
+    </p>
+
+    <button id="toggleBtn" class="btn" type="button" onclick="toggleExample()">
+      Показать пример решения
+    </button>
+
+    <div id="example">
+      <h2>Пример алгоритма на JavaScript</h2>
+      <pre><code>
+// Ищем наименьшее A
+function alwaysTrueForA(A) {
+  for (let x = 0; x <= 60; x++) {
+    for (let y = 0; y <= x; y++) {
+      // при y > x или x>60 одна из частей уже ложна,
+      // но для этих x,y нужно проверить x+2y < A
+      if (!((x + 2*y < A) || (y > x) || (x > 60))) {
+        return false;
+      }
+    }
+  }
+  return true;
+}
+
+let bestA = null;
+for (let A = 0; A < 300; A++) {
+  if (alwaysTrueForA(A)) {
+    bestA = A;
+    break;
+  }
+}
+console.log("Минимальное A =", bestA); // 181
+      </code></pre>
+    </div>
+
+    <h2>Проверь свой ответ</h2>
+    <form id="quiz">
+      <p>Выберите правильное значение A:</p>
+      <label><input type="radio" name="answer" value="180"> 180</label><br>
+      <label><input type="radio" name="answer" value="181"> 181</label><br>
+      <label><input type="radio" name="answer" value="182"> 182</label><br><br>
+      <button class="btn" type="button" onclick="checkAnswer()">Проверить</button>
+    </form>
+    <div id="result"></div>
   </section>
+
+  <script>
+    function toggleExample() {
+      const ex = document.getElementById('example'),
+            btn = document.getElementById('toggleBtn');
+      if (ex.style.display === 'none') {
+        ex.style.display = 'block';
+        btn.textContent = 'Скрыть пример решения';
+      } else {
+        ex.style.display = 'none';
+        btn.textContent = 'Показать пример решения';
+      }
+    }
+
+    function checkAnswer() {
+      const ans = document.querySelector('input[name="answer"]:checked')?.value;
+      const correct = '181';
+      const res = document.getElementById('result');
+      if (ans === correct) {
+        res.textContent = 'Верно!';
+        res.className = 'correct';
+      } else {
+        res.textContent = 'Неверно. Попробуйте ещё раз.';
+        res.className = 'wrong';
+      }
+    }
+  </script>
 </body>
 </html>

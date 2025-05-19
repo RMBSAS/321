@@ -1,11 +1,17 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Задание 9 — Практика</title>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../../assets/style.css">
+  <link rel="stylesheet" href="../../assets/style.css" />
+  <style>
+    #example { display: none; margin-top: 1em; }
+    #toggleBtn { margin-bottom: 1em; }
+    .correct { color: #0f0; }
+    .wrong   { color: #f00; }
+  </style>
 </head>
 <body>
   <h1>Задание 9 — Практика</h1>
@@ -13,33 +19,80 @@
     <a href="../../index.html">На главную</a> |
     <a href="teoria.html">Теория</a>
   </nav>
+
   <section>
-    <h2>Практическое задание</h2>
-    <p>Сколько существует восьмеричных пятизначных чисел, не содержащих в записи цифру 1, в которых все цифры различны и никакие две чётные или две нечётные цифры не стоят рядом? (Ответ – одно число без пояснений).</p>
-    <h2>Решение на Python</h2>
-    <pre><code>count = 0
-# Множества чётных и нечётных цифр в восьмеричной системе
-even = {'0','2','4','6'}
-odd = {'3','5','7'}  # исключаем '1'
+    <h2>Восьмеричные пятизначные числа без повторов и с чередованием чётности</h2>
+    <p>
+      Сколько существует восьмеричных пятизначных чисел, не содержащих цифру <strong>1</strong>,
+      в которых все цифры различны и никакие две чётные или две нечётные цифры не стоят рядом?
+      (Ответ – одно число без пояснений.)
+    </p>
 
-for num in range(0o10000, 0o100000):  # от 8^4 до 8^5-1
-    s = format(num, 'o')
-    # Проверка длины и отсутствия '1'
-    if len(s) != 5 or '1' in s:
-        continue
-    # Все цифры должны быть различны
-    if len(set(s)) != 5:
-        continue
-    # Проверка, что нет двух подряд чётных или нечётных
-    valid = True
-    for i in range(4):
-        if (s[i] in even and s[i+1] in even) or (s[i] in odd and s[i+1] in odd):
-            valid = False
-            break
-    if valid:
-        count += 1
+    <button id="toggleBtn" class="btn" type="button" onclick="toggleExample()">
+      Показать пример решения
+    </button>
 
-print(count)  # Ответ задачи</code></pre>
+    <div id="example">
+      <h2>Пример алгоритма на JavaScript</h2>
+      <pre><code>
+// Генерируем все пятизначные числа в основании 8 без цифры '1'
+let count = 0;
+const isEven = d => d % 2 === 0;
+for (let n = 0; n < 8**5; n++) {
+  let s = n.toString(8).padStart(5, '0');
+  if (s[0] === '0') continue;       // не пятизначное
+  if (s.includes('1')) continue;    // нет единицы
+  const digits = [...s];
+  if (new Set(digits).size < 5) continue;  // проверка уникальности
+  // проверяем чередование чётности
+  let ok = true;
+  for (let i = 0; i < 4; i++) {
+    if (isEven(+digits[i]) === isEven(+digits[i+1])) {
+      ok = false;
+      break;
+    }
+  }
+  if (ok) count++;
+}
+console.log("Итоговый count =", count); // 180
+      </code></pre>
+    </div>
+
+    <h2>Проверь свой ответ</h2>
+    <form id="quiz">
+      <p>Выберите правильный ответ:</p>
+      <label><input type="radio" name="answer" value="168"> 168</label><br>
+      <label><input type="radio" name="answer" value="180"> 180</label><br>
+      <label><input type="radio" name="answer" value="192"> 192</label><br><br>
+      <button class="btn" type="button" onclick="checkAnswer()">Проверить</button>
+    </form>
+    <div id="result"></div>
   </section>
+
+  <script>
+    function toggleExample() {
+      const ex = document.getElementById('example'),
+            btn = document.getElementById('toggleBtn');
+      if (ex.style.display === 'none') {
+        ex.style.display = 'block';
+        btn.textContent = 'Скрыть пример решения';
+      } else {
+        ex.style.display = 'none';
+        btn.textContent = 'Показать пример решения';
+      }
+    }
+    function checkAnswer() {
+      const ans = document.querySelector('input[name="answer"]:checked')?.value;
+      const correct = '180';
+      const res = document.getElementById('result');
+      if (ans === correct) {
+        res.textContent = 'Верно!';
+        res.className = 'correct';
+      } else {
+        res.textContent = 'Неверно. Попробуйте ещё раз.';
+        res.className = 'wrong';
+      }
+    }
+  </script>
 </body>
 </html>

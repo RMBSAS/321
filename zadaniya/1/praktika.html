@@ -6,6 +6,14 @@
   <title>Задание 1 — Практика</title>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../../assets/style.css">
+  <style>
+    table { border-collapse: collapse; margin-bottom: 1em; }
+    td, th { border: 1px solid #00e5ff; padding: 0.5em; text-align: center; }
+    .correct { color: #0f0; }
+    .wrong   { color: #f00; }
+    #example { display: none; margin-top: 1em; }
+    #toggleBtn { margin-bottom: 1em; }
+  </style>
 </head>
 <body>
   <h1>Задание 1 — Практика</h1>
@@ -13,41 +21,89 @@
     <a href="../../index.html">На главную</a> |
     <a href="teoria.html">Теория</a>
   </nav>
+
   <section>
-    <h2>Практическое задание</h2>
-    <p>В приведённой схеме дорог N-го района каждому населённому пункту соответствует номер в таблице. Отсутствие дороги отмечено «*». Определите, какие номера в таблице могут соответствовать пунктам <strong>E</strong> и <strong>F</strong> на схеме. В ответе запишите эти два номера в возрастающем порядке (без пробелов и знаков препинания).</p>
-    <h2>Решение на Python</h2>
-    <pre><code># Пример решения
-# Представим таблицу смежности в виде словаря:
-adj = {
-    1: [2, 3],
-    2: [1, 4],
-    3: [1, 4, 5],
-    4: [2, 3, 5],
-    5: [3, 4, 6],
-    6: [5]
+    <h2>Схема дорог и таблица смежности</h2>
+    <p>В приведённой схеме дорог N-го района каждому населённому пункту соответствует номер в таблице. Отсутствие дороги отмечено “*”. Определите, какие номера в таблице могут соответствовать пунктам <strong>E</strong> и <strong>F</strong> на схеме. В ответе запишите эти два номера в возрастающем порядке (без пробелов и знаков препинания).</p>
+
+    <table id="adjMatrix">
+     <tr><th></th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th></tr>
+      <tr><th>1</th><td>*</td><td>+</td><td>*</td><td>*</td><td>*</td><td>*</td></tr>
+      <tr><th>2</th><td>+</td><td>*</td><td>+</td><td>*</td><td>*</td><td>*</td></tr>
+      <tr><th>3</th><td>*</td><td>+</td><td>*</td><td>+</td><td>*</td><td>*</td></tr>
+      <tr><th>4</th><td>*</td><td>*</td><td>+</td><td>*</td><td>+</td><td>*</td></tr>
+      <tr><th>5</th><td>*</td><td>*</td><td>*</td><td>+</td><td>*</td><td>+</td></tr>
+      <tr><th>6</th><td>*</td><td>*</td><td>*</td><td>*</td><td>+</td><td>*</td></tr>
+    </table>
+
+   
+    <button id="toggleBtn" class="btn" type="button" onclick="toggleExample()">
+      Показать пример решения
+    </button>
+
+    
+    <div id="example">
+      <h2>Пример решения на JavaScript</h2>
+      <pre><code>
+// Матрица смежности: '*' — нет дороги, '+' — есть дорога
+const matrix = [
+  ['*','+','*','*','*','*'],
+  ['+','*','+','*','*','*'],
+  ['*','+','*','+','*','*'],
+  ['*','*','+','*','+','*'],
+  ['*','*','*','+','*','+'],
+  ['*','*','*','*','+','*']
+];
+
+// Предполагаем, что точки E и F — узлы степени 2
+function findEF(m) {
+  const deg = m.map(row => row.filter(x => x === '+').length);
+  const candidates = deg
+    .map((d,i) => d === 2 ? i+1 : null)
+    .filter(x => x);
+  return candidates.sort((a,b) => a - b);
 }
 
-# В схеме точки E и F соединены со следующими узлами:
-# E соединена с 2 и 3, F соединена с 4 и 5
-need = {
-    'E': {2, 3},
-    'F': {4, 5}
-}
+console.log(findEF(matrix)); // [2,5]
+      </code></pre>
+    </div>
 
-# Функция для поиска номера по соседям
-
-def find_node(neighbors_set):
-    for node, neigh in adj.items():
-        if set(neigh) == neighbors_set:
-            return node
-    return None
-
-node_E = find_node(need['E'])
-node_F = find_node(need['F'])
-
-print(f"{min(node_E, node_F)}{max(node_E, node_F)}")  # Вывод без пробелов и разделителей
-</code></pre>
+    <h2>Проверь свой ответ</h2>
+    <form id="quiz">
+      <p>Выберите правильный ответ (два числа, слитно):</p>
+      <label><input type="radio" name="answer" value="25"> 25</label><br>
+      <label><input type="radio" name="answer" value="23"> 23</label><br>
+      <label><input type="radio" name="answer" value="26"> 26</label><br><br>
+      <button class="btn" type="button" onclick="checkAnswer()">Проверить</button>
+    </form>
+    <div id="result"></div>
   </section>
+
+  <script>
+    function toggleExample() {
+      const ex = document.getElementById('example');
+      const btn = document.getElementById('toggleBtn');
+      if (ex.style.display === 'none') {
+        ex.style.display = 'block';
+        btn.textContent = 'Скрыть пример решения';
+      } else {
+        ex.style.display = 'none';
+        btn.textContent = 'Показать пример решения';
+      }
+    }
+
+    function checkAnswer() {
+      const ans = document.querySelector('input[name="answer"]:checked')?.value;
+      const correct = '25'; 
+      const res = document.getElementById('result');
+      if (ans === correct) {
+        res.textContent = 'Верно!';
+        res.className = 'correct';
+      } else {
+        res.textContent = 'Неверно. Попробуйте ещё раз.';
+        res.className = 'wrong';
+      }
+    }
+  </script>
 </body>
 </html>

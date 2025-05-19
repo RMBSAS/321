@@ -1,11 +1,17 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Задание 5 — Практика</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Задание 6 — Практика</title>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../../assets/style.css">
+  <link rel="stylesheet" href="../../assets/style.css" />
+  <style>
+    #example { display: none; margin-top: 1em; }
+    #toggleBtn { margin-bottom: 1em; }
+    .correct { color: #0f0; }
+    .wrong   { color: #f00; }
+  </style>
 </head>
 <body>
   <h1>Задание 6 — Практика</h1>
@@ -13,41 +19,103 @@
     <a href="../../index.html">На главную</a> |
     <a href="teoria.html">Теория</a>
   </nav>
+
   <section>
-    <h2>Практическое задание</h2>
-    <p><strong>Исполнитель «Черепаха»</strong> действует на плоскости с декартовой системой координат. В начальный момент черепаха в начале координат, голова направлена вдоль оси <em>y</em>, хвост опущен (рисует линии). Даны две команды: «Вперёд <em>n</em>» (перейти на <em>n</em> вперед) и «Направо <em>m</em>» (повернуться на <em>m</em> градусов по часовой стрелке). Запись <code>Повтори 7 [Вперёд 10 Направо 120]</code> означает повтор последовательности внутри скобок 7 раз. Выполняется алгоритм:</p>
+    <h2>Черепаха: Повтори 7 [Вперёд 10 Направо 120]</h2>
+    <p>
+      Исполнитель «Черепаха» начинает в (0,0), голова смотрит вдоль +Y, хвост опущен (рисует). 
+      Выполняется команда:
+    </p>
     <pre><code>Повтори 7 [Вперёд 10 Направо 120]</code></pre>
-    <p>Определите, сколько точек с целочисленными координатами будут находиться <strong>внутри</strong> области, ограниченной линией, заданной этим алгоритмом (точки на границе не считаются).</p>
-    <h2>Решение на Python</h2>
-    <pre><code>import math
-from shapely.geometry import Polygon, Point
+    <p>Определите, сколько точек с целочисленными координатами будут находиться <strong>внутри</strong> области, ограниченной получившейся замкнутой линией (границу не считаем).</p>
 
-# Генерируем вершины многоугольника
-x, y = 0.0, 0.0
-angle = 90  # начальное направление вдоль оси y
-vertices = []
+    <!-- Кнопка для показа/скрытия примера -->
+    <button id="toggleBtn" class="btn" type="button" onclick="toggleExample()">
+      Показать пример решения
+    </button>
 
-for _ in range(7):
-    # Вперёд 10
-    rad = math.radians(angle)
-    x += 10 * math.cos(rad)
-    y += 10 * math.sin(rad)
-    vertices.append((x, y))
-    # Направо 120
-    angle -= 120
+    <div id="example">
+      <h2>Пример решения на JavaScript</h2>
+      <pre><code>
+// 1) Собираем вершины многоугольника
+let x = 0, y = 0;
+let angle = Math.PI/2; // 90°
+const verts = [[x,y]];
 
-# Закрываем полигон
-poly = Polygon(vertices)
+for (let i = 0; i < 7; i++) {
+  x += 10 * Math.cos(angle);
+  y += 10 * Math.sin(angle);
+  verts.push([x, y]);
+  angle -= 120 * Math.PI/180;
+}
 
-# Находим границы для обхода точек
-minx, miny, maxx, maxy = map(math.floor, poly.bounds)
+// 2) Функция "точка в многоугольнике" (ray-casting)
+function pointInPoly(px, py, poly) {
+  let inside = false;
+  for (let i = 0, j = poly.length-1; i < poly.length; j = i++) {
+    const xi = poly[i][0], yi = poly[i][1];
+    const xj = poly[j][0], yj = poly[j][1];
+    const intersect = ((yi > py) !== (yj > py))
+      && (px < (xj - xi)*(py - yi)/(yj - yi) + xi);
+    if (intersect) inside = !inside;
+  }
+  return inside;
+}
 
-count = 0
-for xi in range(minx+1, maxx):
-    for yi in range(miny+1, maxy):
-        if poly.contains(Point(xi, yi)):
-            count += 1
+// 3) Считаем целые точки внутри
+const xs = verts.map(v=>v[0]);
+const ys = verts.map(v=>v[1]);
+const minX = Math.floor(Math.min(...xs));
+const maxX = Math.ceil(Math.max(...xs));
+const minY = Math.floor(Math.min(...ys));
+const maxY = Math.ceil(Math.max(...ys));
 
-print(f"Число целочисленных точек внутри: {count}")</code></pre>
+let count = 0;
+for (let i = minX; i <= maxX; i++) {
+  for (let j = minY; j <= maxY; j++) {
+    if (pointInPoly(i+0.5, j+0.5, verts)) count++;
+  }
+}
+console.log("Целых точек внутри:", count);
+      </code></pre>
+    </div>
+
+    <h2>Проверь свой ответ</h2>
+    <form id="quiz">
+      <p>Выберите правильный ответ:</p>
+      <label><input type="radio" name="answer" value="7"> 7</label><br>
+      <label><input type="radio" name="answer" value="13"> 13</label><br>
+      <label><input type="radio" name="answer" value="14"> 14</label><br><br>
+      <button class="btn" type="button" onclick="checkAnswer()">Проверить</button>
+    </form>
+    <div id="result"></div>
   </section>
+
+  <script>
+    function toggleExample() {
+      const ex = document.getElementById('example'),
+            btn = document.getElementById('toggleBtn');
+      if (ex.style.display === 'none') {
+        ex.style.display = 'block';
+        btn.textContent = 'Скрыть пример решения';
+      } else {
+        ex.style.display = 'none';
+        btn.textContent = 'Показать пример решения';
+      }
+    }
+
+    function checkAnswer() {
+      const ans = document.querySelector('input[name="answer"]:checked')?.value;
+      const correct = '13';  // <-- замените на реальный ответ
+      const res = document.getElementById('result');
+      if (ans === correct) {
+        res.textContent = 'Верно!';
+        res.className = 'correct';
+      } else {
+        res.textContent = 'Неверно. Попробуйте ещё раз.';
+        res.className = 'wrong';
+      }
+    }
+  </script>
 </body>
+</html>

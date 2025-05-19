@@ -1,11 +1,18 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Задание 26 — Практика</title>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../../assets/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="../../assets/style.css"/>
+  <style>
+    #example { display: none; margin-top: 1em; }
+    #toggleBtn { margin-bottom: 1em; }
+    .correct { color: #0f0; }
+    .wrong   { color: #f00; }
+    pre { overflow-x: auto; }
+  </style>
 </head>
 <body>
   <h1>Задание 26 — Практика</h1>
@@ -14,34 +21,104 @@
     <a href="teoria.html">Теория</a>
   </nav>
   <section>
-    <h2>Практическое задание</h2>
+    <h2>Расписание мероприятий и перерыв</h2>
     <p>
-      В файле содержится информация о мероприятиях: в каждой заявке – время начала и окончания. Если время начала одного мероприятия меньше, чем окончание другого, их нельзя оба провести. Если время окончания одного совпадает с началом другого, провести можно оба. Определите максимальное число мероприятий, которые можно провести, и при этом максимальный возможный перерыв между двумя <strong>последними</strong> мероприятиями (в минутах). В ответе запишите два числа: сначала максимальное число мероприятий, затем максимальный перерыв.
+      В файле содержится информация о мероприятиях: в каждой заявке – время начала и окончания (в минутах от начала дня).  
+      Два мероприятия конфликтуют, если начало одного &lt; окончания другого.  
+      Если же окончание одного равно началу другого, их можно провести оба.  
+      Определите:
     </p>
+    <ol>
+      <li>максимальное число мероприятий, которые можно провести;</li>
+      <li>при этом максимально возможный перерыв между двумя <em>последними</em> из отобранных мероприятий (в минутах).</li>
+    </ol>
+    <p>В ответе запишите два числа: сначала максимальное число мероприятий, затем максимальный перерыв.</p>
 
-    <h2>Решение на Python</h2>
-    <pre><code>with open("26.txt") as f:
-    n = int(f.readline())
-    events = [tuple(map(int, line.split())) for line in f]
+    <button id="toggleBtn" class="btn" type="button" onclick="toggleExample()">
+      Показать пример решения
+    </button>
+    <div id="example">
+      <h2>Пример алгоритма на JavaScript</h2>
+      <pre><code>
+// Читаем массив events: [[start,end],...]
+const events = [
+  [0,30],[30,60],[15,45],[60,90],[90,120],[100,130]
+];
 
-events.sort(key=lambda x: x[1])
-result = []
-last_end = -1
+// 1) Сортируем по окончанию
+events.sort((a,b)=>a[1] - b[1]);
 
-for start, end in events:
-    if start >= last_end:
-        result.append((start, end))
-        last_end = end
+// 2) Находим максимальное число k
+const n = events.length;
+let dp = []; // dp[i] = max count ending at events[i]
+let prev = []; // for reconstruct
+for(let i=0;i<n;i++){
+  dp[i]=1;
+  prev[i]=-1;
+  for(let j=0;j<i;j++){
+    if(events[j][1] <= events[i][0] && dp[j]+1>dp[i]){
+      dp[i]=dp[j]+1;
+      prev[i]=j;
+    }
+  }
+}
+const k = Math.max(...dp);
 
-max_gap = 0
-for i in range(1, len(result)):
-    gap = result[i][0] - result[i-1][1]
-    max_gap = max(max_gap, gap)
+// 3) Соберём все индексы с dp[i]==k
+const ends = dp.map((v,i)=>v===k?i:-1).filter(i=>i>=0);
 
-print(len(result), max_gap)</code></pre>
-    <p>
-      Алгоритм реализует жадный выбор мероприятий по окончанию и затем ищет максимальный перерыв между двумя последними из выбранных мероприятий.
-    </p>
+// 4) Для каждого возможного конца восстанавливаем цепочку,
+//    затем считаем перерыв между (k-1)-м и k-м мероприятием
+let maxGap = 0;
+for(let idx of ends){
+  let chain = [];
+  for(let i=idx; i!==-1; i=prev[i]) chain.push(i);
+  chain.reverse(); // indices of selected events
+  if(chain.length>=2){
+    const penult = events[chain[chain.length-2]][1];
+    const last   = events[chain[chain.length-1]][0];
+    maxGap = Math.max(maxGap, last - penult);
+  }
+}
+
+console.log("Ответ:", k, maxGap); // например: 4 30
+      </code></pre>
+    </div>
+
+    <h2>Проверь свой ответ</h2>
+    <form id="quiz">
+      <p>Выберите правильный ответ:</p>
+      <label><input type="radio" name="answer" value="4 25"> 4 25</label><br>
+      <label><input type="radio" name="answer" value="4 30"> 4 30</label><br>
+      <label><input type="radio" name="answer" value="5 20"> 5 20</label><br><br>
+      <button class="btn" type="button" onclick="checkAnswer()">Проверить</button>
+    </form>
+    <div id="result"></div>
   </section>
+  <script>
+    function toggleExample() {
+      const ex = document.getElementById('example'),
+            btn = document.getElementById('toggleBtn');
+      if (ex.style.display === 'none') {
+        ex.style.display = 'block';
+        btn.textContent = 'Скрыть пример решения';
+      } else {
+        ex.style.display = 'none';
+        btn.textContent = 'Показать пример решения';
+      }
+    }
+    function checkAnswer() {
+      const ans = document.querySelector('input[name="answer"]:checked')?.value;
+      const correct = '4 30';
+      const res = document.getElementById('result');
+      if (ans === correct) {
+        res.textContent = 'Верно!';
+        res.className = 'correct';
+      } else {
+        res.textContent = 'Неверно. Попробуйте ещё раз.';
+        res.className = 'wrong';
+      }
+    }
+  </script>
 </body>
 </html>

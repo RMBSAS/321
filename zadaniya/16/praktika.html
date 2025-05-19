@@ -2,10 +2,16 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Задание 16 — Практика</title>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../../assets/style.css" />
+  <style>
+    #example { display: none; margin-top: 1em; }
+    #toggleBtn { margin-bottom: 1em; }
+    .correct { color: #0f0; }
+    .wrong   { color: #f00; }
+  </style>
 </head>
 <body>
   <h1>Задание 16 — Практика</h1>
@@ -13,29 +19,76 @@
     <a href="../../index.html">На главную</a> |
     <a href="teoria.html">Теория</a>
   </nav>
+
   <section>
-    <h2>Практическое задание</h2>
-    <p>Алгоритм вычисления функции <code>F(n)</code> задан рекурсивно:</p>
-    <ul>
-      <li><code>F(n) = n</code>, если <code>n > 2024</code>;</li>
-      <li><code>F(n) = n * F(n+1)</code>, если <code>n ≤ 2024</code>;</li>
-    </ul>
-    <p>Найдите значение выражения <code>F(2022) / F(2024)</code>.</p>
-    <h2>Решение на Python</h2>
-    <pre><code>import math
+    <h2>Рекурсивная функция F(n)</h2>
+    <p>
+      Функция <strong>F(n)</strong> задана рекурсивно:
+      <ul>
+        <li>Если <code>n &gt; 2024</code>, то <code>F(n) = n</code>;</li>
+        <li>Если <code>n &le; 2024</code>, то <code>F(n) = n × F(n+1)</code>.</li>
+      </ul>
+      Найдите значение выражения <strong>F(2022) / F(2024)</strong>.
+    </p>
 
-def F(n):
-    if n > 2024:
-        return n
-    return n * F(n+1)
+    <button id="toggleBtn" class="btn" type="button" onclick="toggleExample()">
+      Показать пример решения
+    </button>
 
-# Однако можно вывести формулу:
-# F(2022) = 2022 * 2023 * 2024 * F(2025)
-# F(2024) = 2024 * F(2025)
-# => F(2022)/F(2024) = 2022 * 2023
+    <div id="example">
+      <h2>Пример рассуждения и расчёта на JavaScript</h2>
+      <pre><code>
+// По определению:
+// F(2025) = 2025  (так как 2025 > 2024)
+// F(2024) = 2024 * F(2025) = 2024 * 2025
+// F(2023) = 2023 * F(2024) = 2023 * 2024 * 2025
+// F(2022) = 2022 * F(2023) = 2022 * 2023 * 2024 * 2025
 
-result = 2022 * 2023
-print(result)  # Ответ задачи</code></pre>
+// Тогда:
+const num = 2022n * 2023n * 2024n * 2025n;
+const den = 2024n * 2025n;
+const result = num / den;  // 2022 * 2023
+console.log("F(2022)/F(2024) =", result.toString()); // 409,  (2022*2023)=409,  (actual)
+      </code></pre>
+      <p><em>Примечание: результат есть произведение 2022×2023.</em></p>
+    </div>
+
+    <h2>Проверь свой ответ</h2>
+    <form id="quiz">
+      <p>Выберите правильный ответ:</p>
+      <label><input type="radio" name="answer" value="40906506"> 40906506</label><br>
+      <label><input type="radio" name="answer" value="409065"> 409065</label><br>
+      <label><input type="radio" name="answer" value="409"> 409</label><br><br>
+      <button class="btn" type="button" onclick="checkAnswer()">Проверить</button>
+    </form>
+    <div id="result"></div>
   </section>
+
+  <script>
+    function toggleExample() {
+      const ex = document.getElementById('example'),
+            btn = document.getElementById('toggleBtn');
+      if (ex.style.display === 'none') {
+        ex.style.display = 'block';
+        btn.textContent = 'Скрыть пример решения';
+      } else {
+        ex.style.display = 'none';
+        btn.textContent = 'Показать пример решения';
+      }
+    }
+
+    function checkAnswer() {
+      const ans = document.querySelector('input[name="answer"]:checked')?.value;
+      const correct = '40906506'; // 2022 * 2023 = 4,090,506
+      const res = document.getElementById('result');
+      if (ans === correct) {
+        res.textContent = 'Верно!';
+        res.className = 'correct';
+      } else {
+        res.textContent = 'Неверно. Попробуйте ещё раз.';
+        res.className = 'wrong';
+      }
+    }
+  </script>
 </body>
 </html>
